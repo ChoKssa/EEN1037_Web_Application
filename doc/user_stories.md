@@ -11,7 +11,7 @@
 
 ### **All Users**
 
-- ✅ *As a user, I want to register and log in with a username and password.*
+- ✅ *As a user, I want to log in with a username and password.*
 - ✅ *As a user, I want my password to be securely stored (hashed and encrypted).*
 - ✅ *As a user, I want to log out easily.*
 - ✅ *As a user, I want to receive an error message if my credentials are incorrect.*
