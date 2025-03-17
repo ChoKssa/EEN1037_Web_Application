@@ -6,7 +6,7 @@
 
 #### **Backend Requirements**
 
-- The system **must support user authentication** using **session-based authentication**.
+- The system **must support user authentication** using **session-based authentication** (for web application) and **API Keys** (for external use).
 - Users must be able to **log in** with their **username and password**.
 - Passwords must be **hashed and stored securely**.
 - A **Manager** must be able to:
@@ -34,6 +34,7 @@
   - `status`: One of **OK, Warning, Fault** (Enum, required)
   - `collections`: multiple user-definable strings matching regex **[A-Za-z0-9\\-]**
   - `assigned_users`: Many-to-Many relationship with Technicians and Repairers.
+  - `warnings`: Warning messages added by Technicians and removed by Repairers.
 - The **Manager** must be able to:
   - **Add, edit, and delete machines.**
   - **Assign machines to users.**
@@ -57,8 +58,9 @@
   - `reported_by`: Technician who reported the fault (ForeignKey)
   - `description`: Text field for details.
   - `images`: Optional file upload.
-  - `status`: Open / Closed
-- **Technicians** must be able to **report faults** with a description and images.
+  - `status`: Open / Closed.
+  - `notes`: notes added while Repairers are working on the case.
+- **Technicians** must be able to **report faults** with a description and images, and update them by adding notes later.
 - **Repairers** must be able to **update fault cases**, adding notes/images.
 - **Repairers** must be able to **mark a fault case as resolved**.
 
