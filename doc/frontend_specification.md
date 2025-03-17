@@ -17,6 +17,7 @@
   - First display of **assigned machines** for Technicians and Repairers.
   - Add/modify machine form (only for Managers).
   - Add **warnings** (Technician) and remove warnings (Technician & Repair).
+  - You must be able to click on an element (a machine) to be directed to the machine's specific page.
 - `/machines/{id}/`
   - **Machine-specific display** with full details in the form of a product sheet.
   - Machine information can be modified or deleted for Managers.
@@ -29,7 +30,8 @@
 
 - `/faults/`
   - Form enabling a **Technician to report a new fault** with description and images.
-  - List of **open faults** in table form.
+  - List of **open fault cases** in table form.
+  - You must be able to click on an element (a fault case) to be directed to its specific page.
 - `/faults/{id}/`
   - **Machine-specific display** with full breakdown details and history of notes (messages and images).
   - Repairers can click on a button to close the fault.
@@ -42,6 +44,7 @@
 - `/dashboard/`
   - Managers should see a dashboard summarizing all current machine statuses, but also the ability to drill down and view summaries for different collections of machinery. They can also view the ranking of machines with the most breakdowns. Information should be presented as dynamic graphs via **Chart.js** or **D3.js**, and they can export a global report as a CSV or PDF file.
   - Technicians and Repairers should see the status of the machines to which they are assigned, but they can click on a "see more" button to redirect to `/machines`.
+  - Buttons should redirect to `/machines/` and `faults` for more details.
 
 ---
 
