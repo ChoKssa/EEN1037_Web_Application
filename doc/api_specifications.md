@@ -509,7 +509,7 @@
 
 ## **5️⃣ Security & Access Control**
 
-- All API requests must be **authenticated via JWT tokens**.
+- All API requests must be authenticated via **web session** or **API key**.
 - Managers have full **CRUD access**.
 - Technicians can **report faults**.
 - Repairers can **update and resolve faults, and add images**.
