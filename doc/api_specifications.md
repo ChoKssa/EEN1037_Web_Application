@@ -362,13 +362,12 @@
   }
   ```
 
-#### **Endpoint: `POST /api/faults/images`** (Technician only)
+#### **Endpoint: `POST /api/faults/{id}/images`** (Technician only)
 
 - **Description**: Upload multiple images for a fault case.
 - **Request Body (multipart/form-data)**:
 
   ```form
-    fault_id: 1
     images: [file1.jpg, file2.jpg]
   ```
 
@@ -389,7 +388,7 @@
 
 #### **Endpoint: `GET /api/faults/`**
 
-- **Description**: Retrieves all open faults.
+- **Description**: Retrieves all faults.
 - **Response**:
   
   ```json
@@ -407,15 +406,14 @@
   ]
   ```
 
-#### **Endpoint: `POST /api/faults/{id}/`** (Repairer only)
+#### **Endpoint: `POST /api/faults/{id}/note`** (Repairer only)
 
-- **Description**: Adds new notes to an fault case and closes it if repair is complete
+- **Description**: Adds new notes to a fault case
 - **Request Body:**
 
   ```json
   {
     "notes": "Replaced motor capacitor.",
-    "status": "Closed"
   }
   ```
 
@@ -427,7 +425,7 @@
         "machine": 1,
         "reported_by": 2,
         "description": "Motor overheating",
-        "status": "Closed",
+        "status": "Open",
         "created_at": "2024-03-14T12:00:00Z",
         "images": ["http://localhost:8080/img/faults/{fault_id}/file1.jpg", "http://localhost:8080/img/faults/{fault_id}/file2.jpg"],
         "notes": [
@@ -442,13 +440,12 @@
   }
   ```
 
-#### **Endpoint: `POST /api/faults/{id}/images`** (Repairer only)
+#### **Endpoint: `POST /api/faults/{fault_id}/note/{note_id}/images`** (Repairer only)
 
 - **Description**: Upload multiple images for a fault case linked to a note.
 - **Request Body (multipart/form-data)**:
 
   ```form
-    note_id: 1
     images: [file1.jpg, file2.jpg]
   ```
 
@@ -472,6 +469,40 @@
                 "images": [["http://localhost:8080/img/faults/{fault_id}/{note_id}/file1.jpg", "http://localhost:8080/img/faults/{fault_id}/{note_id}/file2.jpg"]]
             }
         ]
+  }
+  ```
+
+#### **Endpoint: `PUT /api/faults/{id}`** (only Repairer)
+
+- **Description**: Changes a fault case status
+- **Request Body:**
+  
+  ```json
+  {
+    "status": "Closed"
+  }
+  ```
+
+- **Response (Success - 200 OK):**
+
+  ```json
+  {
+    "id": 5,
+    "machine": 1,
+    "reported_by": 2,
+    "description": "Motor overheating",
+    "status": "Closed",
+    "created_at": "2024-03-14T12:00:00Z",
+    "images": ["http://localhost:8080/img/faults/{fault_id}/file1.jpg", "http://localhost:8080/img/faults/{fault_id}/file2.jpg"],
+    "notes": [
+        {
+            "id": 1,
+            "by": 5,
+            "created_at": "2024-03-16T11:00:00Z",
+            "notes": "Replaced motor capacitor.",
+            "images": [["http://localhost:8080/img/faults/{fault_id}/{note_id}/file1.jpg", "http://localhost:8080/img/faults/{fault_id}/{note_id}/file2.jpg"]]
+        }
+    ]
   }
   ```
 
@@ -507,10 +538,37 @@
 
 ---
 
-## **5️⃣ Security & Access Control**
+## **5️⃣ Help**
+
+#### **Endpoint: `POST /api/contact`**
+
+- **Description**: Sends a contact form to be stored.
+- **Request Body:**
+  
+  ```json
+  {
+    "email": "sender@gmail.com",
+    "subject": "",
+    "body": ""
+  }
+  ```
+
+- **Response (Success - 201 Created):**
+  
+  ```json
+  {
+  {
+    "email": "sender@gmail.com",
+    "subject": "",
+    "body": ""
+  }
+  }
+  ```
+
+---
+
+## **6️⃣ Security & Access Control**
 
 - All API requests must be authenticated via **web session** or **API key**.
 - Managers have full **CRUD access**.
-- Technicians can **report faults**.
-- Repairers can **update and resolve faults, and add images**.
-- View-only users can **only retrieve machine data**.
+- View-only users can **only retrieve data**.
