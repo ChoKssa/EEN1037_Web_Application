@@ -50,6 +50,8 @@
 
 ## **General Pages**
 
+- `/`
+- Application home page displaying a brief description of the application and its features.
 - `/about/`
   - Presents an overview of the Factory Machinery Status & Repair Tracking System.  
   - Describes the purpose of the system and how it benefits the factory.  
@@ -61,7 +63,3 @@
 - `/contact/`
   - Displays contact details for technical support.  
   - Includes a form for users to submit issues or inquiries.
-- `/terms/`
-  - Details user responsibilities and system usage guidelines.  
-  - Explains data privacy and security policies.  
-  - Outlines how user data is stored and managed.
