@@ -48,8 +48,7 @@ nav ul li .btn {
 }
 
 .hero {
-  background: url("modern-automobile-production-line-automated-production-equipment-shop-assembly-new-modern-cars-way-assembly-car-assembly-line-plant.jpg")
-    no-repeat center center/cover;
+  background: url("images/indexbackground.jpg") no-repeat center center/cover;
   height: 70vh;
   display: flex;
   align-items: center;
