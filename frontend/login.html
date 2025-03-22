@@ -12,16 +12,19 @@
         <img src="images/logo.png" alt="Machinery Tracker Logo" />
       </div>
       <h2>Login to Your Account</h2>
-      <form action="/dashboard/" method="POST">
+      <form id="loginForm" action="dashboard.html" method="POST">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required />
+        <small id="usernameError" class="error"></small>
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required />
+        <small id="passwordError" class="error"></small>
 
         <button type="submit">Login</button>
       </form>
       <p><a href="index.html">Return home</a></p>
     </div>
   </body>
+  <script src="loginValdaiton.js"></script>
 </html>

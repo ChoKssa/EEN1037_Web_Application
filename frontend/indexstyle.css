@@ -22,6 +22,10 @@ header {
   height: 60px;
   width: auto;
 }
+.logo:hover img {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
 
 header .logo {
   font-size: 1.5em;
@@ -43,6 +47,10 @@ nav ul li a {
   font-size: 1.1em;
 }
 
+nav ul li a:hover {
+  color: #6679e0;
+}
+
 nav ul li .btn {
   background: white;
   color: #1a237e;
@@ -51,9 +59,14 @@ nav ul li .btn {
   font-weight: bold;
 }
 
-.hero {
+nav ul li .btn:hover {
+  background: #888888;
+}
+
+.intro-section {
   background: url("images/indexbackground.jpg") no-repeat center center/cover;
   height: 60vh;
+  display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -61,22 +74,22 @@ nav ul li .btn {
   padding: 200px;
 }
 
-.hero-content {
+.intro-content {
   background: rgba(26, 35, 126, 0.85);
   padding: 20px;
   border-radius: 10px;
 }
 
-.hero h1 {
+.intro-content h1 {
   font-size: 2.5em;
 }
 
-.hero p {
+.intro-content p {
   margin: 15px 0;
   font-size: 1.2em;
 }
 
-.hero .btn {
+.intro-content .btn {
   display: inline-block;
   margin-top: 10px;
   background: white;
@@ -98,6 +111,9 @@ nav ul li .btn {
   text-align: center;
   width: 30%;
   padding: 55px;
-  background: #e3f2fd;
+  background: #c7c7c7;
   border-radius: 10px;
+}
+.btn:hover {
+  background: #929292;
 }

@@ -29,7 +29,7 @@ h2 {
 
 label {
   display: block;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
   margin: 10px 0 5px;
 }
@@ -78,4 +78,9 @@ a:hover {
 
 .logo img {
   height: 150px;
+}
+
+.error {
+  color: red;
+  margin: 10px 0;
 }
