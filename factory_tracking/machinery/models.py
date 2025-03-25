@@ -77,7 +77,6 @@ class User(Base):
         }
 
     # Role checking properties
-    
     @property
     def is_manager(self):
         """
@@ -113,3 +112,112 @@ class User(Base):
             bool: True if user has view-only access, False otherwise
         """
         return self.role == UserRole.VIEW_ONLY 
+
+    @classmethod
+    def create_user(cls, username, password, role, created_by=None):
+        """
+        Create a new user with role validation
+        Args:
+            username (str): The user's username
+            password (str): The user's plain text password
+            role (str): The user's role (must match UserRole enum)
+            created_by (User): The manager creating the user
+        Returns:
+            User: New user instance
+        Raises:
+            RoleError: If creator doesn't have permission or role is invalid
+        """
+        # Validate that only managers can create users
+        if created_by and not created_by.is_manager:
+            raise RoleError("Only managers can create new users")
+
+        # Validate and convert role string to enum
+        try:
+            role_enum = UserRole[role.upper()]
+        except KeyError:
+            raise RoleError(f"Invalid role: {role}. Must be one of {[r.name for r in UserRole]}")
+
+        return cls(username=username, password=password, role=role_enum)
+
+    def update_role(self, new_role, updated_by):
+        """
+        Update user's role with proper validation
+        Args:
+            new_role (str): New role to assign
+            updated_by (User): The manager updating the role
+        Raises:
+            RoleError: If updater doesn't have permission or role is invalid
+        """
+        # Validate that only managers can update roles
+        if not updated_by.is_manager:
+            raise RoleError("Only managers can update user roles")
+
+        # Validate and convert role string to enum
+        try:
+            role_enum = UserRole[new_role.upper()]
+        except KeyError:
+            raise RoleError(f"Invalid role: {new_role}. Must be one of {[r.name for r in UserRole]}")
+
+        self.role = role_enum
+
+    def can_manage_machines(self):
+        """
+        Check if user can manage (create/update/delete) machines
+        Returns:
+            bool: True if user has machine management permissions
+        """
+        return self.is_manager
+
+    def can_manage_warnings(self):
+        """
+        Check if user can manage machine warnings
+        Returns:
+            bool: True if user can add/remove warnings
+        """
+        return self.is_technician or self.is_repair
+
+    def can_create_fault_reports(self):
+        """
+        Check if user can create fault reports
+        Returns:
+            bool: True if user can create fault reports
+        """
+        return self.is_technician
+
+    def can_manage_repairs(self):
+        """
+        Check if user can manage repairs
+        Returns:
+            bool: True if user can manage repairs
+        """
+        return self.is_repair
+
+    def has_access_to_machine(self, machine):
+        """
+        Check if user has access to a specific machine
+        Args:
+            machine: Machine instance to check access for
+        Returns:
+            bool: True if user has access to the machine
+        """
+        # Managers have access to all machines
+        if self.is_manager:
+            return True
+        
+        # View-only users can view but not modify
+        if self.is_view_only:
+            return True
+
+        # Technicians and Repairers can access assigned machines
+        if self.is_technician or self.is_repair:
+            return self in machine.assigned_users
+
+        return False
+
+class RoleError(Exception):
+    """Custom exception for role-related errors"""
+    pass
+
+
+    
+
