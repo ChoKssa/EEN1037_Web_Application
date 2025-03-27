@@ -1,0 +1,34 @@
+
+
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'users/css/dashboard.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<main>
+  <section id="overview" class="card">
+    <h2>Overview</h2>
+    <p>
+      Welcome to your dashboard. Here you can find a quick summary of your
+      data.
+    </p>
+  </section>
+
+  <section id="reports" class="card">
+    <h2>Reports</h2>
+    <p>Access detailed reports and analytics here.</p>
+  </section>
+
+  <section id="settings" class="card">
+    <h2>Settings</h2>
+    <p>Manage your preferences and account settings.</p>
+  </section>
+</main>
+{% endblock %}

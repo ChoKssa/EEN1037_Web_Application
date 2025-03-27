@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def machines(request):
+    context = {}
+    return render(request, "machinery/machines.html", context)

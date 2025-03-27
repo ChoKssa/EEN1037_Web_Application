@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Faults{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'faults/css/faults.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+ <!-- Faults Page Content -->
+ <main>
+  <section class="card">
+    <h2>Report a New Fault</h2>
+    <form action="#" method="POST" enctype="multipart/form-data">
+      <label for="machine-name">Machine Name:</label><br />
+      <input type="text" id="machine-name" name="machine-name" required /><br /><br />
+
+      <label for="description">Description:</label><br />
+      <textarea id="description" name="description" rows="4" required></textarea><br /><br />
+
+      <label for="images">Upload Images:</label><br />
+      <input type="file" id="images" name="images" multiple accept="image/*" /><br /><br />
+
+      <button type="submit">Submit Fault</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Open Fault Cases</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Machine</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Date Reported</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example Row -->
+        <tr>
+          <td><a href="/faults/1">F001</a></td>
+          <td>Machine 001</td>
+          <td>Overheating issue</td>
+          <td>Open</td>
+          <td>2025-03-26</td>
+        </tr>
+        <!-- More rows here -->
+      </tbody>
+    </table>
+  </section>
+</main>
+{% endblock %}

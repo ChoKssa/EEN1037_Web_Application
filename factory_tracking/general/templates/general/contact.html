@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Contact{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'general/css/contact.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="card">
+    <h2>Contact Technical Support</h2>
+    <p>If you have questions or encounter any issues, our support team is here to help you.</p>
+  </section>
+
+  <section class="card">
+    <h2>Support Details</h2>
+    <p><strong>Email:</strong> <a href="mailto:support@factorytrack.com">support@factorytrack.com</a></p>
+    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+    <p><strong>Support Hours:</strong> Monday - Friday, 9:00 AM to 5:00 PM</p>
+  </section>
+
+  <section class="card">
+    <h2>Submit an Inquiry</h2>
+    <form action="/submit_contact_form" method="POST">
+      <label for="name">Your Name:</label><br />
+      <input type="text" id="name" name="name" required /><br /><br />
+
+      <label for="email">Your Email:</label><br />
+      <input type="email" id="email" name="email" required /><br /><br />
+
+      <label for="message">Message:</label><br />
+      <textarea id="message" name="message" rows="5" required></textarea><br /><br />
+
+      <input type="submit" value="Submit" />
+    </form>
+  </section>
+</main>
+{% endblock %}

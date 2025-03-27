@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def faults(request):
+    context = {}
+    return render(request, "faults/faults.html", context)
