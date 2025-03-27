@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}About{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'general/css/about.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<!-- About Page Content -->
+<main>
+  <section id="overview" class="card">
+    <h2>System Overview</h2>
+    <p>
+      The Factory Machinery Status & Repair Tracking System helps monitor the health of machines in a car manufacturing facility. It provides real-time updates, fault tracking, and repair management to reduce downtime and improve productivity.
+    </p>
+  </section>
+
+  <section id="purpose" class="card">
+    <h2>Purpose</h2>
+    <p>
+      Our system is built to streamline maintenance workflows. From identifying faults to assigning technicians and monitoring progress, everything is centralized in one intuitive platform.
+    </p>
+  </section>
+
+  <section id="benefits" class="card">
+    <h2>Key Benefits</h2>
+    <ul>
+      <li>Live machine status updates</li>
+      <li>Faster fault reporting and resolution</li>
+      <li>Improved team coordination</li>
+      <li>Access to complete maintenance history</li>
+    </ul>
+  </section>
+
+  <section id="team" class="card">
+    <h2>Meet the Team</h2>
+    <ul>
+      <li><strong>Project Lead:</strong> Maneesh Shankar</li>
+      <li><strong>Frontend Developer:</strong> Dhanraj Putta</li>
+      <li><strong>Backend Developer:</strong> Suhas Sharath</li>
+      <li><strong>System Analyst:</strong> Catherine </li>
+    </ul>
+  </section>
+</main>
+{% endblock %}

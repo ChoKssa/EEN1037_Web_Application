@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Help{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'general/css/help.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="card">
+    <h2>User Guide</h2>
+    <p>
+      Here's how to navigate and use the system:
+    </p>
+    <ul>
+      <li>Go to <strong>Machines</strong> to see live machine statuses.</li>
+      <li>Use <strong>Faults</strong> to report and track machine issues.</li>
+      <li>Access <strong>Dashboard</strong> for a quick overview of all activities.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Frequently Asked Questions</h2>
+    <ul>
+      <li><strong>Q:</strong> How do I report a machine fault?<br />
+          <strong>A:</strong> Go to the "Faults" page and click "Report New Fault".</li>
+      <li><strong>Q:</strong> Can I track past repairs?<br />
+          <strong>A:</strong> Yes, visit the Dashboard or Machines page for repair history.</li>
+      <li><strong>Q:</strong> Who do I contact if I'm locked out of my account?<br />
+          <strong>A:</strong> Please reach out to the support team via the <a href="/contact">Contact</a> page.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>API Documentation</h2>
+    <p>
+      Developers can integrate external systems with our platform using these basic API endpoints:
+    </p>
+    <ul>
+      <li><code>GET /api/machines</code> - Retrieve all machines and statuses</li>
+      <li><code>POST /api/faults</code> - Submit a new fault report</li>
+      <li><code>GET /api/repairs/:id</code> - Get details of a specific repair</li>
+    </ul>
+    <p>More detailed API documentation will be available soon.</p>
+  </section>
+</main>
+{% endblock %}
