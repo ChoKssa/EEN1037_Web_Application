@@ -1,0 +1,74 @@
+
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Machines{% endblock %}
+
+{% block styles %}
+<link
+  rel="stylesheet"
+  href="{% static 'machinery/css/machines.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="card">
+    <h2>Machines</h2>
+
+    <div class="filters">
+      <label for="status-filter">Filter by Status:</label>
+      <select id="status-filter">
+        <option value="all">All</option>
+        <option value="ok">OK</option>
+        <option value="warning">Warning</option>
+        <option value="fault">Fault</option>
+      </select>
+
+      <label for="collection-filter">Filter by Collection:</label>
+      <input type="text" id="collection-filter" placeholder="Enter collection name" />
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Collection</th>
+          <th>Warnings</th>
+          <th>Technicians Assigned</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example row -->
+        <tr>
+          <td><a href="/machines/1">Machine 001</a></td>
+          <td>Warning</td>
+          <td>Line A</td>
+          <td>2</td>
+          <td>John Doe</td>
+          <td>
+            <button>Add Warning</button>
+            <button>Remove Warning</button>
+          </td>
+        </tr>
+        <!-- More rows dynamically inserted -->
+      </tbody>
+    </table>
+
+    <div class="manager-actions">
+      <h3>Add / Modify Machine (Managers only)</h3>
+      <form>
+        <input type="text" placeholder="Machine Name" required />
+        <input type="text" placeholder="Collection" required />
+        <select required>
+          <option value="ok">OK</option>
+          <option value="warning">Warning</option>
+          <option value="fault">Fault</option>
+        </select>
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}
