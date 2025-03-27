@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Manufacturing Machinery Tracker</title>
+    <link rel="stylesheet" href="indexstyle.css" />
+    <style>
+      main {
+        padding: 50px 40px;
+        background: #f4f4f4;
+      }
+
+      .card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .card h2 {
+        color: #1a237e;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="images/logo.png" alt="Company Logo" />
+      </div>
+      <nav>
+        <ul>
+          <li><a href="machines.html">Machines</a></li>
+          <li><a href="faults.html">Faults</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="help.html">Help</a></li>
+          <li><a href="login.html" class="btn">Login</a></li>
+        </ul>
+      </nav>
+    </header>
+ <!-- Faults Page Content -->
+ <main>
+  <section class="card">
+    <h2>Report a New Fault</h2>
+    <form action="#" method="POST" enctype="multipart/form-data">
+      <label for="machine-name">Machine Name:</label><br />
+      <input type="text" id="machine-name" name="machine-name" required /><br /><br />
+
+      <label for="description">Description:</label><br />
+      <textarea id="description" name="description" rows="4" required></textarea><br /><br />
+
+      <label for="images">Upload Images:</label><br />
+      <input type="file" id="images" name="images" multiple accept="image/*" /><br /><br />
+
+      <button type="submit">Submit Fault</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Open Fault Cases</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Machine</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Date Reported</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example Row -->
+        <tr>
+          <td><a href="fault_001.html">F001</a></td>
+          <td>Machine 001</td>
+          <td>Overheating issue</td>
+          <td>Open</td>
+          <td>2025-03-26</td>
+        </tr>
+        <!-- More rows here -->
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>
