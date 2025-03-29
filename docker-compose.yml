@@ -1,0 +1,31 @@
+services:
+    factory:
+        container_name: factory_tracking
+        build:
+            context: ./factory_tracking
+        restart: on-failure
+        volumes:
+            - ./factory_tracking/storage:/app/storage
+        ports:
+            - "8000:8000"
+        environment:
+            DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME:-admin}
+            DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-admin}
+            DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
+            DATABASE_URL: ${DATABASE_URL:-postgres://factoryuser:factorypass@db:5432/factorydb}
+
+    db:
+        image: postgres:alpine
+        container_name: postgres_db
+        restart: always
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-factorydb}
+            POSTGRES_USER: ${POSTGRES_USER:-factoryuser}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-factorypass}
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+volumes:
+    pgdata:

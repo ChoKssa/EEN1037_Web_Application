@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Fault detail{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'machinery/css/detail.css' %}"
+/>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'machinery/js/detail.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="card">
+      <h2>Machine Details - <span id="machineName">Welder X100</span></h2>
+      <p><strong>Status:</strong> <span id="machineStatus">OK</span></p>
+      <p><strong>Collection:</strong> <span id="machineCollection">Line A</span></p>
+      <p><strong>Warnings:</strong></p>
+      <ul id="warningList">
+
+      </ul>
+      <p><strong>Assigned Technicians:</strong> <span id="assignedTechs">John, Priya</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Manager Controls</h3>
+      <label>Edit Machine Name</label>
+      <input type="text" id="editName" value="Welder X100">
+      <label>Edit Status</label>
+      <input type="text" id="editStatus" value="OK">
+      <label>Edit Collection</label>
+      <input type="text" id="editCollection" value="Line A">
+      <label>Edit Technicians</label>
+      <input type="text" id="editTechs" value="John, Priya">
+      <br>
+      <button onclick="saveChanges()">Save Changes</button>
+      <button onclick="deleteMachine()">Delete Machine</button>
+      <br><br>
+      <label>Add Warning</label>
+      <input type="text" id="warningInput" placeholder="Enter warning details">
+      <button onclick="addWarning()">Add</button>
+    </div>
+</main>
+{% endblock %}
