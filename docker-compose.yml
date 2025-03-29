@@ -5,7 +5,7 @@ services:
             context: ./factory_tracking
         restart: on-failure
         volumes:
-            - ./app/storage:/app/storage
+            - ./factory_tracking/storage:/app/storage
         ports:
             - "8000:8000"
         environment:

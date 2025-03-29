@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block title %}Fault detail{% endblock %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'faults/css/detail.css' %}"
+/>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'faults/js/detail.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="card">
+    <h2>Fault Case #1</h2>
+    <p><strong>Machine:</strong> Welder X100</p>
+    <p><strong>Description:</strong> Smoke detected near sensor</p>
+    <p><strong>Status:</strong> <span id="faultStatus">Open</span></p>
+    <button onclick="closeFault()">Close Fault</button>
+  </div>
+
+  <div class="card">
+    <h3>Notes & Updates</h3>
+    <ul id="noteList">
+      <li class="note">Technician logged issue. <br><small>Image: sensor_smoke.jpg</small></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Add Note</h3>
+    <form onsubmit="addNote(event)">
+      <textarea id="noteText" rows="3" placeholder="Write a note..." required></textarea><br>
+      <label>Attach Image (optional)</label>
+      <input type="file" id="noteImage" accept="image/*">
+      <button type="submit">Add Note</button>
+    </form>
+  </div>
+</main>
+{% endblock %}
