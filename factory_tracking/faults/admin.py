@@ -29,7 +29,7 @@ class FaultCaseAdmin(admin.ModelAdmin):
     inlines = [FaultImageInline, FaultNoteInline]
 
 # ----------------------------
-# FaultNoteImage Admin (optional, to manage them separately)
+# FaultNoteImage Admin
 # ----------------------------
 
 @admin.register(FaultNoteImage)
