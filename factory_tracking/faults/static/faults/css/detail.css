@@ -1,0 +1,42 @@
+main {
+	padding: 40px;
+	background: #f4f4f4;
+}
+
+.card {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+li.note {
+	background: #e8eaf6;
+	margin: 10px 0;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.note img {
+	max-width: 100px;
+	display: block;
+	margin-top: 5px;
+}
+
+button {
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+input[type="file"],
+textarea {
+	width: 100%;
+	margin-top: 8px;
+	padding: 8px;
+}

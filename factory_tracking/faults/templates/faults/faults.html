@@ -9,49 +9,38 @@
 />
 {% endblock %}
 
+
+{% block scripts %}
+<script src="{% static 'faults/js/faults.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
  <!-- Faults Page Content -->
  <main>
-  <section class="card">
-    <h2>Report a New Fault</h2>
-    <form action="#" method="POST" enctype="multipart/form-data">
-      <label for="machine-name">Machine Name:</label><br />
-      <input type="text" id="machine-name" name="machine-name" required /><br /><br />
-
-      <label for="description">Description:</label><br />
-      <textarea id="description" name="description" rows="4" required></textarea><br /><br />
-
-      <label for="images">Upload Images:</label><br />
-      <input type="file" id="images" name="images" multiple accept="image/*" /><br /><br />
-
+  <h2>Report a Fault</h2>
+  <div class="form-container">
+    <form onsubmit="submitFault(event)">
+      <label>Machine Name</label>
+      <input type="text" id="faultMachine" required>
+      <label>Description</label>
+      <textarea rows="4" id="faultDescription" required></textarea>
+      <label>Upload Image (optional)</label>
+      <input type="file" id="faultImage" accept="image/*">
       <button type="submit">Submit Fault</button>
     </form>
-  </section>
+  </div>
 
-  <section class="card">
-    <h2>Open Fault Cases</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Machine</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Date Reported</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Example Row -->
-        <tr>
-          <td><a href="/faults/1">F001</a></td>
-          <td>Machine 001</td>
-          <td>Overheating issue</td>
-          <td>Open</td>
-          <td>2025-03-26</td>
-        </tr>
-        <!-- More rows here -->
-      </tbody>
-    </table>
-  </section>
+  <h2>Open Fault Cases</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Fault ID</th>
+        <th>Machine</th>
+        <th>Description</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="faultTable"></tbody>
+  </table>
 </main>
 {% endblock %}
