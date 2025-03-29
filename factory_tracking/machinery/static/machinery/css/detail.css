@@ -1,0 +1,30 @@
+main {
+	padding: 50px 40px;
+	background: #f4f4f4;
+}
+
+.card {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button {
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+input[type="text"] {
+	width: 100%;
+	padding: 8px;
+	margin-top: 5px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+}
+
+ul {
+	list-style: disc;
+	padding-left: 20px;
+}

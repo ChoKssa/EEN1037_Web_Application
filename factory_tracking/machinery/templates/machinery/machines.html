@@ -10,65 +10,63 @@
 />
 {% endblock %}
 
+{% block scripts %}
+<script src="{% static 'machinery/js/machines.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
 <main>
-  <section class="card">
-    <h2>Machines</h2>
+  <h2>Machine Management</h2>
 
-    <div class="filters">
-      <label for="status-filter">Filter by Status:</label>
-      <select id="status-filter">
-        <option value="all">All</option>
-        <option value="ok">OK</option>
-        <option value="warning">Warning</option>
-        <option value="fault">Fault</option>
+  <div class="filter-bar">
+    <select id="statusFilter">
+      <option value="">All Status</option>
+      <option value="OK">OK</option>
+      <option value="Warning">Warning</option>
+      <option value="Fault">Fault</option>
+    </select>
+    <input type="text" id="collectionFilter" placeholder="Filter by Collection" />
+  </div>
+
+  <table id="machineTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Collection</th>
+        <th>Warnings</th>
+        <th>Technicians</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Manager-only Form -->
+  <div id="managerForm" class="form-container">
+    <h3>Add or Modify Machine</h3>
+    <form onsubmit="submitMachineForm(event)">
+      <label for="machineName">Machine Name</label>
+      <input type="text" id="machineName" required>
+
+      <label for="machineStatus">Status</label>
+      <select id="machineStatus">
+        <option>OK</option>
+        <option>Warning</option>
+        <option>Fault</option>
       </select>
 
-      <label for="collection-filter">Filter by Collection:</label>
-      <input type="text" id="collection-filter" placeholder="Enter collection name" />
-    </div>
+      <label for="machineCollection">Collection</label>
+      <input type="text" id="machineCollection">
 
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Collection</th>
-          <th>Warnings</th>
-          <th>Technicians Assigned</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Example row -->
-        <tr>
-          <td><a href="/machines/1">Machine 001</a></td>
-          <td>Warning</td>
-          <td>Line A</td>
-          <td>2</td>
-          <td>John Doe</td>
-          <td>
-            <button>Add Warning</button>
-            <button>Remove Warning</button>
-          </td>
-        </tr>
-        <!-- More rows dynamically inserted -->
-      </tbody>
-    </table>
+      <label for="assignedRoles">Assign To (e.g. technician, repairer)</label>
+      <input type="text" id="assignedRoles" placeholder="Comma-separated roles">
 
-    <div class="manager-actions">
-      <h3>Add / Modify Machine (Managers only)</h3>
-      <form>
-        <input type="text" placeholder="Machine Name" required />
-        <input type="text" placeholder="Collection" required />
-        <select required>
-          <option value="ok">OK</option>
-          <option value="warning">Warning</option>
-          <option value="fault">Fault</option>
-        </select>
-        <button type="submit">Save</button>
-      </form>
-    </div>
-  </section>
+      <label for="technicians">Technicians (comma separated)</label>
+      <input type="text" id="technicians">
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
 </main>
 {% endblock %}
