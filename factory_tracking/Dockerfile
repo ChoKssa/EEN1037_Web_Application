@@ -29,4 +29,4 @@ ENV DJANGO_SUPERUSER_EMAIL=admin@localhost
 
 EXPOSE 8000
 
-CMD ["/app/docker_entrypoint"]
+CMD ["bash", "/app/docker_entrypoint.sh"]
