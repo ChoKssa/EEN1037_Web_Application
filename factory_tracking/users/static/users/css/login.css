@@ -72,7 +72,18 @@
 	height: 150px;
 }
 
-.login-container .error {
+.login-container .error-message {
 	color: red;
 	margin: 10px 0;
+}
+
+.error {
+	background-color: #ffe6e6;
+	color: #b30000;
+	border: 1px solid #ff4d4d;
+	padding: 10px 15px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+	font-weight: bold;
+	text-align: center;
 }

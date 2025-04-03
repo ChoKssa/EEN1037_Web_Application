@@ -14,5 +14,10 @@ class User(AbstractUser):
         default=UserRole.VIEW_ONLY
     )
 
+    def save(self, *args, **kwargs):
+        if self.is_superuser:
+            self.role = UserRole.MANAGER
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
