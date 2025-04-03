@@ -11,6 +11,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+  const machines = {{ machines|safe }};
+  const userRole = "{{ user_role }}";
+  const usernames = {{ usernames|safe }};
+</script>
 <script src="{% static 'machinery/js/machines.js' %}" defer></script>
 {% endblock %}
 
@@ -36,7 +41,7 @@
         <th>Collection</th>
         <th>Warnings</th>
         <th>Technicians</th>
-        <th>Actions</th>
+        <th>Repairers</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -44,26 +49,34 @@
 
   <!-- Manager-only Form -->
   <div id="managerForm" class="form-container">
-    <h3>Add or Modify Machine</h3>
-    <form onsubmit="submitMachineForm(event)">
+    <h3>Add new Machine</h3>
+    <form id="machineForm" method="POST" action="{% url 'create_machine' %}">
+      {% csrf_token %}
       <label for="machineName">Machine Name</label>
       <input type="text" id="machineName" required>
 
       <label for="machineStatus">Status</label>
       <select id="machineStatus">
-        <option>OK</option>
-        <option>Warning</option>
-        <option>Fault</option>
+        <option value="OK">OK</option>
+        <option value="WARNING">Warning</option>
+        <option value="FAULT">Fault</option>
       </select>
 
-      <label for="machineCollection">Collection</label>
-      <input type="text" id="machineCollection">
+      <label for="machineCollections">Collections</label>
+      <input type="text" id="machineCollections" placeholder="Comma-separated collections">
 
-      <label for="assignedRoles">Assign To (e.g. technician, repairer)</label>
-      <input type="text" id="assignedRoles" placeholder="Comma-separated roles">
+      <label for="assignedUsers">Assign To (autocomplete)</label>
+      <div class="autocomplete-input">
+        <input type="text" id="userInput" placeholder="Type a username..." autocomplete="off" />
+        <ul id="userSuggestions" class="suggestions"></ul>
+        <div id="selectedUsers" class="selected-users"></div>
+      </div>
 
-      <label for="technicians">Technicians (comma separated)</label>
-      <input type="text" id="technicians">
+      <!-- Hidden fields to inject from JS -->
+      <input type="hidden" name="name" id="hiddenName">
+      <input type="hidden" name="status" id="hiddenStatus">
+      <input type="hidden" name="collections" id="hiddenCollections">
+      <input type="hidden" name="assigned" id="hiddenAssigned">
 
       <button type="submit">Save</button>
     </form>

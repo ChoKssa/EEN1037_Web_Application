@@ -54,3 +54,50 @@ tr:hover {
 .form-container button {
 	margin-top: 15px;
 }
+
+.autocomplete-input {
+	position: relative;
+	width: 100%;
+}
+
+.suggestions {
+	position: absolute;
+	background: white;
+	border-radius: 8px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	max-height: 180px;
+	overflow-y: auto;
+	z-index: 10;
+	width: 100%;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions li {
+	padding: 10px 15px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.2s ease;
+}
+
+.suggestions li:hover {
+	background-color: #1565c0;
+	color: white;
+}
+
+.selected-users {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+.selected-users span {
+	background: #e3f2fd;
+	padding: 6px 10px;
+	border-radius: 20px;
+	font-size: 13px;
+	color: #1565c0;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
