@@ -25,18 +25,29 @@
 
   <section class="card">
     <h2>Submit an Inquiry</h2>
-    <form action="/submit_contact_form" method="POST">
-      <label for="name">Your Name:</label><br />
-      <input type="text" id="name" name="name" required /><br /><br />
+    <form action="{% url 'submit_contact_form' %}" method="POST">
+      {% csrf_token %}
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" required>
 
-      <label for="email">Your Email:</label><br />
-      <input type="email" id="email" name="email" required /><br /><br />
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" required>
 
-      <label for="message">Message:</label><br />
-      <textarea id="message" name="message" rows="5" required></textarea><br /><br />
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
 
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit">
     </form>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
   </section>
 </main>
 {% endblock %}
