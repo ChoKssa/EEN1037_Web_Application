@@ -12,37 +12,23 @@ loginForm.addEventListener("submit", function (event) {
   let username = loginUsername.value.trim();
   let password = loginPassword.value.trim();
 
-  // Validate username
-  if (username.length < 5) {
-    loginUsernameError.innerText =
-      "Username must be at least 5 characters long.";
+  if (username === "") {
+    loginUsernameError.textContent = "Username is required.";
     valid = false;
-  } else {
-    loginUsernameError.innerText = "";
   }
-
-  // Validate password
-  if (password.length < 6) {
-    loginPasswordError.innerText =
-      "Password must be at least 6 characters long.";
+  else {
+    loginUsernameError.textContent = "";
+  }
+  if (password === "") {
+    loginPasswordError.textContent = "Password is required.";
     valid = false;
-  } else {
-    loginPasswordError.innerText = "";
+  }
+  else {
+    loginPasswordError.textContent = "";
   }
 
   // If all inputs are valid
   if (valid) {
-    // Fake check: simulate a user found in database
-    // Replace this with real backend logic
-    let found = username === "admin" && password === "admin123";
-
-    if (found) {
-      alert("Login successful!");
-      loginForm.reset();
-      // Redirect to dashboard.html
-      window.location.href = "dashboard.html";
-    } else {
-      alert("Invalid username or password.");
-    }
+    loginForm.submit();
   }
 });

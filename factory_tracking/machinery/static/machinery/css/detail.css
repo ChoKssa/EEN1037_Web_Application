@@ -1,30 +1,170 @@
-main {
+.machine-detail-page {
 	padding: 50px 40px;
-	background: #f4f4f4;
+	background: #f9fafc;
+	font-family: "Segoe UI", sans-serif;
+	color: #333;
 }
 
-.card {
-	background: white;
-	padding: 20px;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.machine-detail-page .card {
+	background: #fff;
+	padding: 25px 30px;
+	border-radius: 12px;
+	margin-bottom: 25px;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+	transition: box-shadow 0.2s;
 }
 
-button {
-	margin-top: 10px;
-	margin-right: 10px;
+.machine-detail-page .card:hover {
+	box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
 }
 
-input[type="text"] {
+.machine-detail-page h2,
+.machine-detail-page h3 {
+	margin-top: 0;
+	color: #1a237e;
+}
+
+.machine-detail-page p {
+	margin: 10px 0;
+	font-size: 15px;
+}
+
+.machine-detail-page span {
+	font-weight: 500;
+	color: #0d47a1;
+}
+
+.machine-detail-page ul {
+	list-style: none;
+	padding-left: 0;
+	margin: 10px 0 0 0;
+}
+
+.machine-detail-page ul li {
+	background: #f1f5fe;
+	padding: 8px 12px;
+	margin-bottom: 5px;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.machine-detail-page ul li small {
+	display: block;
+	color: #666;
+	font-size: 12px;
+	margin-top: 3px;
+}
+
+.machine-detail-page input[type="text"],
+.machine-detail-page select {
 	width: 100%;
-	padding: 8px;
+	padding: 10px;
 	margin-top: 5px;
-	border-radius: 5px;
+	margin-bottom: 15px;
+	border-radius: 6px;
 	border: 1px solid #ccc;
+	transition: border-color 0.2s;
+	font-size: 14px;
 }
 
-ul {
-	list-style: disc;
-	padding-left: 20px;
+.machine-detail-page input:focus,
+.machine-detail-page select:focus {
+	border-color: #1a237e;
+	outline: none;
+}
+
+.machine-detail-page button {
+	background: #1a237e;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	font-size: 14px;
+}
+
+.machine-detail-page button:hover {
+	background: #303f9f;
+}
+
+.machine-detail-page button:disabled {
+	background: #999;
+	cursor: not-allowed;
+}
+
+.machine-detail-page form {
+	margin-top: 10px;
+}
+
+.machine-detail-page .selected-users {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.machine-detail-page .user-pill {
+	background-color: #e8f0fe;
+	color: #0d47a1;
+	padding: 6px 10px;
+	border-radius: 20px;
+	font-size: 14px;
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.machine-detail-page .user-pill:hover {
+	background-color: #d2e3fc;
+}
+
+.machine-detail-page .user-pill .remove {
+	font-size: 16px;
+	margin-left: 8px;
+	color: #555;
+}
+
+.machine-detail-page .danger-button {
+	background-color: #b71c1c;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.machine-detail-page .danger-button:hover {
+	background-color: #d32f2f;
+}
+
+.machine-detail-page .fault-table-wrapper {
+	overflow-x: auto;
+}
+
+.machine-detail-page .fault-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+	font-size: 14px;
+	background: #fff;
+}
+
+.machine-detail-page .fault-table th,
+.machine-detail-page .fault-table td {
+	padding: 12px 10px;
+	border-bottom: 1px solid #ddd;
+	text-align: left;
+}
+
+.machine-detail-page .fault-table th {
+	background-color: #e3f2fd;
+	color: #0d47a1;
+	font-weight: 600;
+}
+
+.machine-detail-page .fault-table tr:hover {
+	background-color: #f1f1f1;
 }

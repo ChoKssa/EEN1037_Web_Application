@@ -1,43 +1,84 @@
 {% extends 'base.html' %} {% load static %}
 
-{% block title %}Fault detail{% endblock %}
+{% block title %}Fault #{{ fault.id }}{% endblock %}
 
 {% block styles %}
-<link
-	rel="stylesheet"
-	href="{% static 'faults/css/detail.css' %}"
-/>
+<link rel="stylesheet" href="{% static 'faults/css/detail.css' %}" />
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'faults/js/detail.js' %}" defer></script>
+<script>
+  const faultId = {{ fault.id }};
+</script>
 {% endblock %}
 
 {% block content %}
-<main>
+<main class="fault-detail-page">
+
+  <!-- Fault Info -->
   <div class="card">
-    <h2>Fault Case #1</h2>
-    <p><strong>Machine:</strong> Welder X100</p>
-    <p><strong>Description:</strong> Smoke detected near sensor</p>
-    <p><strong>Status:</strong> <span id="faultStatus">Open</span></p>
-    <button onclick="closeFault()">Close Fault</button>
+    <h2>Fault Case #{{ fault.id }}</h2>
+    <p><strong>Machine:</strong> {{ fault.machine.name }}</p>
+    <p><strong>Description:</strong> {{ fault.description }}</p>
+    <p><strong>Status:</strong> <span id="faultStatus">{{ fault.status }}</span></p>
+    <p><strong>Reported By:</strong> {{ fault.reported_by.username }}</p>
+    <p><strong>Created:</strong> {{ fault.created_at|date:"SHORT_DATETIME_FORMAT" }}</p>
+
+    {% if fault.images.all %}
+    <div>
+      <strong>Images:</strong>
+      <div class="image-gallery">
+        {% for img in fault.images.all %}
+          <img src="{{ img.image.url }}" alt="Fault Image" />
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if can_close and fault.status == "OPEN" %}
+      <form method="POST" action="{% url 'close_fault' fault.id %}">
+        {% csrf_token %}
+        <button type="submit" class="danger-button">Close Fault</button>
+      </form>
+    {% endif %}
   </div>
 
+  <!-- Notes -->
   <div class="card">
     <h3>Notes & Updates</h3>
-    <ul id="noteList">
-      <li class="note">Technician logged issue. <br><small>Image: sensor_smoke.jpg</small></li>
-    </ul>
+    {% if notes %}
+      <ul class="note-list">
+        {% for note in notes %}
+        <li>
+          <p>{{ note.content }}</p>
+          <small>— {{ note.author.username }}, {{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+          {% if note.images.all %}
+          <div class="image-gallery">
+            {% for image in note.images.all %}
+              <img src="{{ image.image.url }}" alt="Note Image" />
+            {% endfor %}
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p><em>No notes for this fault yet.</em></p>
+    {% endif %}
   </div>
 
+  {% if can_add_note %}
   <div class="card">
     <h3>Add Note</h3>
-    <form onsubmit="addNote(event)">
-      <textarea id="noteText" rows="3" placeholder="Write a note..." required></textarea><br>
-      <label>Attach Image (optional)</label>
-      <input type="file" id="noteImage" accept="image/*">
+    <form method="POST" action="{% url 'add_fault_note' fault.id %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <textarea name="content" rows="3" placeholder="Write a note..." required></textarea><br>
+      <label>Attach Images (optional)</label>
+      <input type="file" name="images" accept="image/*" multiple>
       <button type="submit">Add Note</button>
     </form>
   </div>
+  {% endif %}
+
 </main>
 {% endblock %}

@@ -20,15 +20,24 @@
       <img src="{% static 'images/logo.png' %}" alt="Machinery Tracker Logo" />
     </div>
     <h2>Login to Your Account</h2>
-    <form id="loginForm" action="/dashboard" method="POST">
+    {% if messages %}
+      <div class="error">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <form id="loginForm" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
       <label for="username">Username</label>
       <input type="text" id="username" name="username" required />
-      <small id="usernameError" class="error"></small>
+      <small id="usernameError" class="error-message"></small>
 
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required />
-      <small id="passwordError" class="error"></small>
+      <small id="passwordError" class="error-message"></small>
 
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
       <button type="submit">Login</button>
     </form>
     <p><a href="/">Return home</a></p>

@@ -11,26 +11,40 @@
 
 
 {% block scripts %}
+<script>
+  const machineNames = {{ machine_names|safe }};
+</script>
 <script src="{% static 'faults/js/faults.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
  <!-- Faults Page Content -->
  <main>
-  <h2>Report a Fault</h2>
-  <div class="form-container">
-    <form onsubmit="submitFault(event)">
-      <label>Machine Name</label>
-      <input type="text" id="faultMachine" required>
-      <label>Description</label>
-      <textarea rows="4" id="faultDescription" required></textarea>
-      <label>Upload Image (optional)</label>
-      <input type="file" id="faultImage" accept="image/*">
-      <button type="submit">Submit Fault</button>
-    </form>
-  </div>
+  {% if user.role == "TECH" or user.role == "MANAGER" %}
+  <form method="POST" action="{% url 'create_fault' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3 class="form-title">Report a New Fault</h3>
 
-  <h2>Open Fault Cases</h2>
+    <label>Select Machine</label>
+    <div class="autocomplete-input">
+      <input type="text" id="machineInput" placeholder="Type machine name..." autocomplete="off" required>
+      <ul id="machineSuggestions" class="suggestions"></ul>
+    </div>
+    <input type="hidden" name="machine" id="machineHidden">
+
+
+    <label>Description</label>
+    <textarea rows="4" name="description" required></textarea>
+
+    <label>Upload Images (optional)</label>
+    <input type="file" name="images" accept="image/*" multiple>
+
+    <button type="submit">Submit Fault</button>
+  </form>
+  {% endif %}
+
+  <h2>Open Fault Cases (Assigned to You)</h2>
+  {% if assigned_faults %}
   <table>
     <thead>
       <tr>
@@ -40,7 +54,45 @@
         <th>Status</th>
       </tr>
     </thead>
-    <tbody id="faultTable"></tbody>
+    <tbody>
+      {% for fault in assigned_faults %}
+      <tr onclick="window.location.href='{% url 'fault_detail' fault.id %}'" style="cursor: pointer;">
+        <td>#{{ fault.id }}</td>
+        <td>{{ fault.machine.name }}</td>
+        <td>{{ fault.description|truncatechars:60 }}</td>
+        <td>{{ fault.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
+  {% else %}
+    <p><em>No assigned fault cases.</em></p>
+  {% endif %}
+
+  <h2 style="margin-top: 40px;">Other Fault Cases</h2>
+  {% if other_faults %}
+  <table>
+    <thead>
+      <tr>
+        <th>Fault ID</th>
+        <th>Machine</th>
+        <th>Description</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fault in other_faults %}
+      <tr onclick="window.location.href='{% url 'fault_detail' fault.id %}'" style="cursor: pointer;">
+        <td>#{{ fault.id }}</td>
+        <td>{{ fault.machine.name }}</td>
+        <td>{{ fault.description|truncatechars:60 }}</td>
+        <td>{{ fault.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p><em>No other fault cases.</em></p>
+  {% endif %}
 </main>
 {% endblock %}

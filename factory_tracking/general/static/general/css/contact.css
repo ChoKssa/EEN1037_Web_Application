@@ -7,11 +7,74 @@ main {
 	background-color: white;
 	border: 1px solid #ddd;
 	border-radius: 10px;
-	padding: 1.5rem;
+	padding: 2rem;
 	margin-bottom: 2rem;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
 }
 
 .card h2 {
 	color: #1a237e;
+	margin-bottom: 15px;
+}
+
+.card label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.card input[type="text"],
+.card input[type="email"],
+.card textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+	margin-bottom: 15px;
+	transition: border-color 0.2s;
+}
+
+.card input:focus,
+.card textarea:focus {
+	border-color: #1a237e;
+	outline: none;
+}
+
+.card input[type="submit"] {
+	background-color: #1a237e;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 15px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.card input[type="submit"]:hover {
+	background-color: #303f9f;
+}
+
+.messages {
+	margin-top: 20px;
+}
+
+.alert {
+	padding: 12px 16px;
+	border-radius: 6px;
+	margin-bottom: 10px;
+	font-weight: 500;
+}
+
+.alert.success {
+	background-color: #e8f5e9;
+	color: #2e7d32;
+	border: 1px solid #a5d6a7;
+}
+
+.alert.error {
+	background-color: #ffebee;
+	color: #c62828;
+	border: 1px solid #ef9a9a;
 }

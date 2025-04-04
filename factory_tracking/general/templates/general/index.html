@@ -15,7 +15,9 @@
       Monitor and manage the health of your factory's robotic arms,
       conveyors, and assembly line equipment.
     </p>
-    <a href="/login" class="btn">Login To Start</a>
+    {% if not request.user.is_authenticated %}
+      <a href="{% url 'login' %}" class="btn">Login To Start</a>
+    {% endif %}
   </div>
 </section>
 

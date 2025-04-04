@@ -1,48 +1,123 @@
 {% extends 'base.html' %} {% load static %}
 
-{% block title %}Fault detail{% endblock %}
+{% block title %}{{ machine.name }} Details{% endblock %}
 
 {% block styles %}
-<link
-	rel="stylesheet"
-	href="{% static 'machinery/css/detail.css' %}"
-/>
+<link rel="stylesheet" href="{% static 'machinery/css/detail.css' %}" />
 {% endblock %}
 
 {% block scripts %}
+<script>
+  const allUsernames = {{ all_usernames|safe }};
+  const initiallyAssigned = {{ assigned_usernames|safe }};
+</script>
 <script src="{% static 'machinery/js/detail.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="card">
-      <h2>Machine Details - <span id="machineName">Welder X100</span></h2>
-      <p><strong>Status:</strong> <span id="machineStatus">OK</span></p>
-      <p><strong>Collection:</strong> <span id="machineCollection">Line A</span></p>
-      <p><strong>Warnings:</strong></p>
-      <ul id="warningList">
+<main class="machine-detail-page">
+  <div class="card">
+    <h2>Machine Details - {{ machine.name }}</h2>
+    <p><strong>Status:</strong> {{ machine.status }}</p>
+    <p><strong>Collections:</strong>
+      {% for c in collections %}
+        <span>{{ c.name }}</span>{% if not forloop.last %}, {% endif %}
+      {% empty %}
+        <em>None</em>
+      {% endfor %}
+    </p>
+    <p><strong>Warnings:</strong></p>
+    <ul>
+      {% for warning in warnings %}
+        <li>{{ warning.message }} <small>(by {{ warning.added_by.username }}, {{ warning.created_at|date:"SHORT_DATETIME_FORMAT" }})</small></li>
+      {% empty %}
+        <li><em>No warnings</em></li>
+      {% endfor %}
+    </ul>
+    <p><strong>Technicians:</strong> {{ technicians|join:", " }}</p>
+    <p><strong>Repairers:</strong> {{ repairers|join:", " }}</p>
+  </div>
 
-      </ul>
-      <p><strong>Assigned Technicians:</strong> <span id="assignedTechs">John, Priya</span></p>
-    </div>
-
-    <div class="card">
-      <h3>Manager Controls</h3>
+  {% if is_manager %}
+  <div class="card">
+    <h3>Manager Controls</h3>
+    <form id="editMachineForm" method="POST" action="{% url 'update_machine' machine.id %}">
+      {% csrf_token %}
       <label>Edit Machine Name</label>
-      <input type="text" id="editName" value="Welder X100">
+      <input type="text" name="name" id="editName" value="{{ machine.name }}" required>
+
       <label>Edit Status</label>
-      <input type="text" id="editStatus" value="OK">
-      <label>Edit Collection</label>
-      <input type="text" id="editCollection" value="Line A">
-      <label>Edit Technicians</label>
-      <input type="text" id="editTechs" value="John, Priya">
-      <br>
-      <button onclick="saveChanges()">Save Changes</button>
-      <button onclick="deleteMachine()">Delete Machine</button>
-      <br><br>
-      <label>Add Warning</label>
-      <input type="text" id="warningInput" placeholder="Enter warning details">
-      <button onclick="addWarning()">Add</button>
+      <select name="status" id="editStatus">
+        <option value="OK" {% if machine.status == "OK" %}selected{% endif %}>OK</option>
+        <option value="WARNING" {% if machine.status == "WARNING" %}selected{% endif %}>Warning</option>
+        <option value="FAULT" {% if machine.status == "FAULT" %}selected{% endif %}>Fault</option>
+      </select>
+
+      <label>Edit Collections</label>
+      <input type="text" name="collections" id="editCollections" value="{{ collections|join:", " }}">
+
+      <label>Assign Users (autocomplete)</label>
+      <div class="autocomplete-input">
+        <input type="text" id="editUserInput" placeholder="Type username..." autocomplete="off" />
+        <ul id="editUserSuggestions" class="suggestions"></ul>
+        <div id="editSelectedUsers" class="selected-users"></div>
+      </div>
+
+      <!-- hidden input for assigned usernames -->
+      <input type="hidden" name="assigned" id="editAssignedHidden" />
+      <button type="submit">Save Changes</button>
+    </form>
+
+    <form method="POST" action="{% url 'delete_machine' machine.id %}" id="deleteMachineForm" style="margin-top: 15px;">
+      {% csrf_token %}
+      <button type="submit" class="danger-button">Delete Machine</button>
+    </form>
+
+
+  </div>
+  {% endif %}
+
+  {% if can_add_warning %}
+  <div class="card">
+    <h3>Add Warning</h3>
+    <form method="POST" action="{% url 'add_warning' machine.id %}">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Enter warning..." required>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+  {% endif %}
+  <div class="card">
+    <h3>Fault History</h3>
+    {% if faults %}
+    <div class="fault-table-wrapper">
+      <table class="fault-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Reported By</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for fault in faults %}
+          <tr onclick="window.location.href='{% url 'fault_detail' fault.id %}'" style="cursor: pointer;">
+            <td>#{{ fault.id }}</td>
+            <td>{{ fault.description|truncatechars:60 }}</td>
+            <td>{{ fault.status }}</td>
+            <td>{{ fault.reported_by.username }}</td>
+            <td>{{ fault.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+    {% else %}
+      <p><em>No fault cases reported for this machine.</em></p>
+    {% endif %}
+  </div>
+
 </main>
 {% endblock %}
