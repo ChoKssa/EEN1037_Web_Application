@@ -12,7 +12,20 @@ loginForm.addEventListener("submit", function (event) {
   let username = loginUsername.value.trim();
   let password = loginPassword.value.trim();
 
-  // [TODO] Check if username and password are empty
+  if (username === "") {
+    loginUsernameError.textContent = "Username is required.";
+    valid = false;
+  }
+  else {
+    loginUsernameError.textContent = "";
+  }
+  if (password === "") {
+    loginPasswordError.textContent = "Password is required.";
+    valid = false;
+  }
+  else {
+    loginPasswordError.textContent = "";
+  }
 
   // If all inputs are valid
   if (valid) {
