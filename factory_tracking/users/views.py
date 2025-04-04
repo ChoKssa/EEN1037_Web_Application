@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 
 
@@ -42,40 +43,38 @@ def dashboard(request):
 
 
 @login_required
+@require_POST
 def export_data(request):
     context = {}
-    # [TODO] create file to be exported (https://github.com/ChoKssa/EEN1037_Web_Application/blob/main/doc/api_specifications.md#endpoint-get-apireportsformatcsvpdf-manager-only)
+    # [TODO] create file to be exported
+    # [TODO] return file to be downloaded
 
 
 @login_required
-def list_users(request):
+def accounts(request):
     context = {}
-    # [TODO] Fetch and display the list of users (https://github.com/ChoKssa/EEN1037_Web_Application/blob/main/doc/api_specifications.md#endpoint-get-apiusers-manager-only)
-    # return render(request, "users/list_users.html", context)
+    # [TODO] Fetch all users and their information and add them to the context (only for manager)
+    return render(request, "users/accounts.html", context)
 
 
 @login_required
+@require_POST
 def create_user(request):
     context = {}
-    if request.method == "POST":
-        # [TODO] Handle user creation logic here (https://github.com/ChoKssa/EEN1037_Web_Application/blob/main/doc/api_specifications.md#endpoint-post-apiusers)
-        pass
+    # [TODO] Handle user creation logic here
 
     # return render(request, "users/create_user.html", context)
 
 
 @login_required
+@require_POST
 def update_user_role(request):
     context = {}
-
-    if request.method == "PATCH":
-        # [TODO] Change user role (https://github.com/ChoKssa/EEN1037_Web_Application/blob/main/doc/api_specifications.md#endpoint-put-apiusersid-manager-only)
-        pass
+    # [TODO] Change user role
 
 
 @login_required
+@require_POST
 def delete_user(request):
     context = {}
-    if request.method == "DELETE":
-        # [TODO] Delete user account (https://github.com/ChoKssa/EEN1037_Web_Application/blob/main/doc/api_specifications.md#endpoint-delete-apiusersid-manager-only)
-        pass
+    # [TODO] Delete user account
