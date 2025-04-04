@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+<link
+	rel="stylesheet"
+	href="{% static 'api/css/manage_api_keys.css' %}"
+/>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+  <h2>Manage API Keys</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create API Key</button>
+  </form>
+
+  <h3>Your API Keys:</h3>
+  <ul>
+    {% for key in api_keys %}
+      <li>
+        <strong>{{ key.name }}</strong> — {{ key.key }} (created {{ key.created_at }})
+      </li>
+    {% empty %}
+      <li>No API keys yet.</li>
+    {% endfor %}
+  </ul>
+</main>
+{% endblock %}
