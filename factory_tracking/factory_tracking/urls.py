@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('faults.urls')),
     path('', include('machinery.urls')),
     path('', include('users.urls')),
+    path('api/', include('api.urls')),
 ]
 
 if settings.DEBUG:
