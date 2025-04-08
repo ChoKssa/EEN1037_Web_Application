@@ -62,7 +62,7 @@
         <div id="stat-details-warning" class="stat-details hidden">
           {% for machine in machines %}
           {% if machine.status == "WARNING" %}
-          <p>{{ machine.name }} </p>
+          <p>{{ machine.name }}</p>
           
           
           {% endif %}
@@ -96,8 +96,12 @@
       </div>
       {% endfor %}
     </div>
+    <div class="export-button-container">
+      <button class="export-btn" onclick="exportCSVData()">Export as CSV</button>
+      <button class="export-btn" onclick="exportPDFData()">Export as PDF</button>
+    </div>
 
-    {% else %}
+    {% elif user_role == 'TECH' or user_role == 'REPAIR' %}
     <!-- Technician or Repair View -->
     <div class="assigned-machine-box">
       <h3>You are assigned to {{ assigned_count }} machines</h3>
@@ -107,7 +111,7 @@
           <div class="machine-name">{{ machine.name }}</div>
           <span class="machine-detail">Status: {{ machine.status }}</span>
           <span class="machine-detail">Collections: {{ machine.collections.all|join:", " }}</span>
-          <span class="machine-detail">Warnings: {{ machine.warnings_count }}</span>
+          <span class="machine-detail">Assigned Users: {{ machine.assigned_users.all|join:", " }}</span>
         </li>
         {% empty %}
         <li class="machine-card">No assigned machines.</li>
@@ -116,10 +120,7 @@
     <a href="{% url 'machines' %}" class="see-more-button">See More</a>
 
     {% endif %}
-    <div class="export-button-container">
-    <button class="export-btn" onclick="exportCSVData()">Export as CSV</button>
-    <button class="export-btn" onclick="exportPDFData()">Export as PDF</button>
-  </div>
+
   </section>
 </main>
 {% endblock %}
