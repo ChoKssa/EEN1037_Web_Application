@@ -8,6 +8,16 @@
 <link rel="stylesheet" href="{% static 'users/css/dashboard.css' %}" />
 {% endblock %}
 
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const Labels = JSON.parse('{{ labels|safe|escapejs }}');
+  const Counts = JSON.parse('{{ counts|safe|escapejs }}');
+</script>
+<script src="{% static 'users/js/dashboard.js' %}" defer></script>
+{% endblock %}
+
+
 {% block content %}
 <main>
   <section id="overview" class="card">
@@ -63,8 +73,6 @@
           {% for machine in machines %}
           {% if machine.status == "WARNING" %}
           <p>{{ machine.name }}</p>
-          
-          
           {% endif %}
           {% endfor %}
         </div>
@@ -75,9 +83,7 @@
     <h3 class="section-subtitle">Machine Status Distribution</h3>
     <div class="chart-wrapper">
       <canvas id="statusPieChart" width="300" height="300"></canvas>
-      
     </div>
-    
 
     <!-- Machines by Collection -->
     <h3 class="section-subtitle">Machines by Collection:</h3>
@@ -99,6 +105,81 @@
     <div class="export-button-container">
       <button class="export-btn" onclick="exportCSVData()">Export as CSV</button>
       <button class="export-btn" onclick="exportPDFData()">Export as PDF</button>
+    </div>
+    <h3 class="section-subtitle">User Management</h3>
+    <div class="user-management">
+      <div class="header">
+        <button class="btn primary" onclick="toggleUserForm()">New User</button>
+      </div>
+
+      <div id="userFormWrapper" class="card hidden">
+        <h3 id="formTitle">Create User</h3>
+        <form id="userForm" class="form" method="post" action="{% url 'create_user_or_edit' %}">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" id="userId" />
+          <label>
+            Email
+            <input type="email" name="email" id="email" required />
+          </label>
+          <label>
+            Username
+            <input type="text" name="username" id="username" required />
+          </label>
+          <label id="passwordLabel">
+            Password
+            <input type="password" name="password" id="password" required />
+          </label>
+          <label>
+            Role
+            <select name="role" id="role" required>
+              <option value="">-- Select Role --</option>
+              {% for value, label in roles %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn success">Save</button>
+            <button type="button" class="btn danger" onclick="toggleUserForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Email</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.username }}</td>
+              <td class="text-capitalize">{{ user.role }}</td>
+              <td class="text-center">
+                <form method="post" action="{% url 'delete_user' %}" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="user_id" value="{{ user.id }}">
+                  <button type="submit" class="btn danger" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+                <button type="button" class="btn warning"
+        onclick="editUser({{ user.id }}, '{{ user.email|escapejs }}', '{{ user.username|escapejs }}', '{{ user.role|escapejs }}')">
+                  Edit
+                </button>
+
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
 
     {% elif user_role == 'TECH' or user_role == 'REPAIR' %}
@@ -123,13 +204,4 @@
 
   </section>
 </main>
-{% endblock %}
-
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const Labels = JSON.parse('{{ labels|safe|escapejs }}');
-  const Counts = JSON.parse('{{ counts|safe|escapejs }}');
-</script>
-<script src="{% static 'users/js/dashboard.js' %}"></script>
 {% endblock %}

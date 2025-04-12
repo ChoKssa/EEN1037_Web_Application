@@ -261,3 +261,158 @@ main {
 	gap: 16px;
 	margin-top: 20px;
 }
+
+/* USER MANAGEMENT SECTION */
+.user-management {
+	margin-top: 20px;
+	padding: 24px 32px;
+}
+
+.user-management .header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 24px;
+}
+
+.user-management .header h2 {
+	font-size: 22px;
+	color: #1a237e;
+	margin: 0;
+}
+
+.user-management .btn.primary {
+	background-color: #1a237e;
+	color: white;
+	padding: 8px 16px;
+	border-radius: 5px;
+	border: none;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.user-management .btn.primary:hover {
+	background-color: #0d173d;
+}
+
+#userFormWrapper.card {
+	background-color: #fdfdfd;
+	padding: 20px;
+	border-radius: 6px;
+	border: 1px solid #ccc;
+	margin-bottom: 30px;
+}
+
+#userFormWrapper h3 {
+	margin-top: 0;
+	color: #003399;
+	margin-bottom: 16px;
+	font-size: 20px;
+}
+
+.user-management .form label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 12px;
+	color: #333;
+}
+
+.user-management .form input,
+.user-management .form select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	font-size: 15px;
+	margin-top: 6px;
+	margin-bottom: 16px;
+}
+
+.user-management .form-actions {
+	display: flex;
+	gap: 12px;
+}
+
+.user-management .btn.success {
+	background-color: #198754;
+	color: white;
+	padding: 8px 14px;
+	border-radius: 5px;
+	font-weight: 600;
+	border: none;
+	cursor: pointer;
+}
+
+.user-management .btn.danger {
+	background-color: #dc3545;
+	color: white;
+	padding: 8px 14px;
+	border-radius: 5px;
+	font-weight: 600;
+	border: none;
+	cursor: pointer;
+}
+
+.user-management .btn.success:hover {
+	background-color: #146c43;
+}
+
+.user-management .btn.danger:hover {
+	background-color: #b02a37;
+}
+
+.user-management .table-wrapper {
+	overflow-x: auto;
+}
+
+.user-management table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: white;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-management th,
+.user-management td {
+	padding: 12px;
+	text-align: left;
+	border-bottom: 1px solid #eee;
+	font-size: 15px;
+}
+
+.user-management th {
+	background-color: #f5f5f5;
+	text-transform: uppercase;
+	font-size: 14px;
+	color: #444;
+}
+
+.user-management td .btn {
+	font-size: 13px;
+	padding: 6px 10px;
+	margin-right: 6px;
+}
+
+.user-management td .btn.warning {
+	background-color: #0a5faf;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.user-management td .btn.danger {
+	background-color: #dc3545;
+	color: white;
+	border: none;
+	border-radius: 4px;
+}
+
+.user-management td .btn.warning:hover {
+	background-color: #1a237e;
+}
+
+.user-management td .btn.danger:hover {
+	background-color: #bd2130;
+}
