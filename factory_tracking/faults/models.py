@@ -20,7 +20,9 @@ class FaultCase(models.Model):
 
     reported_by = models.ForeignKey(
         'users.User',
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='reported_faults',
         limit_choices_to={'role__in': ['TECH', 'MANAGER']},
         help_text="Technician or Manager who reported the fault"
@@ -98,7 +100,9 @@ class FaultNote(models.Model):
     )
     author = models.ForeignKey(
         'users.User',
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         help_text="User who added the note"
     )
     content = models.TextField(
