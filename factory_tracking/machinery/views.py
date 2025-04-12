@@ -77,8 +77,6 @@ def create_machine(request):
     status = request.POST.get("status")
     collections_raw = request.POST.get("collections", "")
     assigned_raw = request.POST.get("assigned", "")
-    print(f"collections_raw: {collections_raw}")
-    # [TODO] Add the new machine in database
     machine = Machine.objects.create(name=name, status=status)
 
     # Add collections
@@ -109,7 +107,6 @@ def edit_machine(request, machine_id):
     collections_raw = request.POST.get("collections", "")
     assigned_raw = request.POST.get("assigned", "")
 
-    # [TODO] Update the machine in database
     machine = get_object_or_404(Machine, id=machine_id)
     machine.name = name
     machine.status = status
