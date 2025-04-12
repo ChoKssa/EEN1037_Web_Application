@@ -61,7 +61,41 @@ def create_fault(request):
     print(f"Description: {description}")
     print(f"Images: {images}")
 
-    # [TODO] Create fault in db
+    # Create fault
+    try:
+        machine = Machine.objects.get(name=machine_name)
+        fault = FaultCase.objects.create(
+            machine=machine,
+            description=description,
+            reported_by=user,
+            status='OPEN',
+            created_at=timezone.now()
+        )
+        
+        for image in images:
+            FaultNoteImage.objects.create(
+                image=image,
+                note=None,
+                uploaded_by=user
+            )
+            
+        # Create initial note with the description
+        note = FaultNote.objects.create(
+            fault_case=fault,
+            author=user,
+            content=f"Fault reported: {description}",
+            created_at=timezone.now()
+        )
+        
+        # Associate any images with the initial note
+        if images:
+            FaultNoteImage.objects.filter(uploaded_by=user, note=None).update(note=note)
+            
+    except Machine.DoesNotExist:
+        return HttpResponseForbidden("Invalid machine specified.")
+    except Exception as e:
+        print(f"Error creating fault: {str(e)}")
+        return HttpResponseForbidden("Error occurred while creating fault.")
 
     return redirect("faults")
 
@@ -77,7 +111,32 @@ def add_fault_note(request, fault_id):
     content = request.POST.get("content")
     images = request.FILES.getlist("images")
 
-    # [TODO] Create fault note in db
+    # Create fault note in db
+    try:
+        note = FaultNote.objects.create(
+            fault_case=fault,
+            author=request.user,
+            content=content,
+            created_at=timezone.now()
+        )
+        
+        # Save images if any were uploaded
+        for image in images:
+            FaultNoteImage.objects.create(
+                image=image,
+                note=note,
+                uploaded_by=request.user
+            )
+            
+        # Update fault status if technician is adding a note
+        if request.user.role == 'TECH' and fault.status == 'OPEN':
+            fault.status = 'IN_PROGRESS'
+            fault.save()
+            
+    except Exception as e:
+        print(f"Error adding note: {str(e)}")
+        return HttpResponseForbidden("Error occurred while adding note.")
+
 
     return redirect("fault_detail", fault_id=fault.id)
 
@@ -90,6 +149,22 @@ def close_fault(request, fault_id):
     if request.user.role != "MANAGER":
         return HttpResponseForbidden("Only managers can close faults.")
 
-    # [TODO] Close fault (or set to Warning) in db
+    # Close fault in db
+    try:
+        fault.status = 'CLOSED'
+        # Create a closure note
+        FaultNote.objects.create(
+            fault_case=fault,
+            author=request.user,
+            content="Fault closed",
+            created_at=timezone.now()
+        )  
+        fault.closed_at = timezone.now()
+        fault.save()
+        
+    except Exception as e:
+        print(f"Error closing fault: {str(e)}")
+        return HttpResponseForbidden("Error occurred while closing fault.")
+
 
     return redirect("fault_detail", fault_id=fault.id)
