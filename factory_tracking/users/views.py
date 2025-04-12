@@ -102,7 +102,9 @@ def dashboard(request):
 @login_required
 @require_POST
 def export_data(request):
-    export_type = request.POST.get("type")  # "csv" ou "pdf"
+    if request.user.role != UserRole.MANAGER:
+        return HttpResponseForbidden("Only managers can export data.")
+    export_type = request.POST.get("type")
     machines = Machine.objects.all().select_related().prefetch_related("collections")
 
     if export_type == "csv":
