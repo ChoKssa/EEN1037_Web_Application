@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from .models import FaultCase, FaultNote, FaultNoteImage
+from .models import FaultCase, FaultNote, FaultNoteImage, FaultImage
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.views.decorators.http import require_POST
-from machinery.models import Machine
+from machinery.models import Machine, MachineStatus
 from users.models import UserRole
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -57,11 +57,35 @@ def create_fault(request):
     description = request.POST.get("description")
     images = request.FILES.getlist("images")
 
-    print(f"Machine Name: {machine_name}")
-    print(f"Description: {description}")
-    print(f"Images: {images}")
+    # Validate input
+    if not machine_name or not description:
+        return HttpResponseForbidden("Machine and description are required.")
 
-    # [TODO] Create fault in db
+    # Create fault
+    try:
+        machine = Machine.objects.get(name=machine_name)
+        fault = FaultCase.objects.create(
+            machine=machine,
+            description=description,
+            reported_by=user,
+            status='OPEN',
+            created_at=timezone.now()
+        )
+
+        for image in images:
+            FaultImage.objects.create(
+                image=image,
+                fault_case=fault,
+            )
+
+        machine.status = MachineStatus.FAULT
+        machine.save()
+
+    except Machine.DoesNotExist:
+        return HttpResponseForbidden("Invalid machine specified.")
+    except Exception as e:
+        print(f"Error creating fault: {str(e)}")
+        return HttpResponseForbidden("Error occurred while creating fault.")
 
     return redirect("faults")
 
@@ -74,10 +98,37 @@ def add_fault_note(request, fault_id):
     if request.user.role not in ['TECH', 'REPAIR', 'MANAGER']:
         return HttpResponseForbidden("Not allowed to add note.")
 
+    if fault.status == 'CLOSED':
+        return HttpResponseForbidden("Cannot add note to a closed fault.")
+
     content = request.POST.get("content")
     images = request.FILES.getlist("images")
 
-    # [TODO] Create fault note in db
+    # Create fault note in db
+    try:
+        note = FaultNote.objects.create(
+            fault_case=fault,
+            author=request.user,
+            content=content,
+            created_at=timezone.now()
+        )
+
+        # Save images if any were uploaded
+        for image in images:
+            FaultNoteImage.objects.create(
+                image=image,
+                note=note,
+            )
+
+        # Update fault status if technician is adding a note
+        if request.user.role == 'TECH' and fault.status == 'OPEN':
+            fault.status = 'IN_PROGRESS'
+            fault.save()
+
+    except Exception as e:
+        print(f"Error adding note: {str(e)}")
+        return HttpResponseForbidden("Error occurred while adding note.")
+
 
     return redirect("fault_detail", fault_id=fault.id)
 
@@ -90,6 +141,31 @@ def close_fault(request, fault_id):
     if request.user.role != "MANAGER":
         return HttpResponseForbidden("Only managers can close faults.")
 
-    # [TODO] Close fault (or set to Warning) in db
+    # Close fault in db
+    try:
+        fault.status = 'CLOSED'
+        # Create a closure note
+        FaultNote.objects.create(
+            fault_case=fault,
+            author=request.user,
+            content="Fault closed",
+            created_at=timezone.now()
+        )
+        fault.closed_at = timezone.now()
+        fault.save()
+
+        if fault.machine.status == MachineStatus.FAULT:
+            if fault.machine.faults.filter(status='OPEN').exists():
+                fault.machine.status = MachineStatus.FAULT
+            elif fault.machine.warnings.exists():
+                fault.machine.status = MachineStatus.WARNING
+            else:
+                fault.machine.status = MachineStatus.OK
+            fault.machine.save()
+
+    except Exception as e:
+        print(f"Error closing fault: {str(e)}")
+        return HttpResponseForbidden("Error occurred while closing fault.")
+
 
     return redirect("fault_detail", fault_id=fault.id)

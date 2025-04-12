@@ -1,18 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 from . import views
 
+router = routers.DefaultRouter()
+router.register(r'machine', views.MachineViewSet)
+router.register(r'warning', views.WarningViewSet)
+router.register(r'faultcase', views.FaultCaseViewSet)
+router.register(r'user', views.UserViewSet)
 
-# [TODO] Add API views for machines, warnings, and faults
 urlpatterns = [
-    # Machines
-    # path("machines/", views.MachineCreateAPIView.as_view(), name="api-machine-create"),
-
-    # Warnings
-    # path("warnings/", views.WarningCreateAPIView.as_view(), name="api-warning-create"),
-
-    # Faults
-    # path("faults/", views.FaultCreateAPIView.as_view(), name="api-fault-create"),
-    # path("faults/open/", views.OpenFaultListAPIView.as_view(), name="api-faults-open"),
-    # path("faults/<int:pk>/", views.FaultDetailAPIView.as_view(), name="api-fault-detail"),
-    # path("faults/<int:pk>/notes/", views.FaultNoteCreateAPIView.as_view(), name="api-faultnote-create"),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
