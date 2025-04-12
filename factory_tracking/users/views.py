@@ -6,10 +6,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
-from machinery.models import Machine, Warning, Collection
+from machinery.models import Machine, Collection
 from users.models import UserRole
 from collections import defaultdict
-from django.db.models import Count
 import json
 from django.http import HttpResponseForbidden
 from django.contrib.auth.hashers import make_password
@@ -130,28 +129,22 @@ def create_user_or_edit(request):
     role = request.POST.get("role")
 
     if not username or role not in UserRole.values:
-        messages.error(request, "Invalid input data.")
-        return redirect("dashboard")
+        return HttpResponseForbidden("Invalid data provided.")
 
     if user_id:
         try:
-            print(f"Editing user with ID: {user_id}")
-            print(f"New username: {username}, email: {email}, role: {role}")
             user = User.objects.get(id=user_id)
             user.username = username
             user.email = email
             user.role = role
             user.save()
-            messages.success(request, "User updated successfully.")
         except User.DoesNotExist:
-            messages.error(request, "User not found.")
+            return HttpResponseForbidden("User not found.")
     else:
         if not password:
-            messages.error(request, "Password is required for new users.")
-            return redirect("dashboard")
-        print(f"Creating new user with username: {username}, email: {email}, role: {role}")
+            return HttpResponseForbidden("Password is required for new users.")
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists.")
+            return HttpResponseForbidden("Username already exists.")
         else:
             User.objects.create(
                 username=username,
@@ -159,8 +152,6 @@ def create_user_or_edit(request):
                 password=make_password(password),
                 role=role
             )
-            messages.success(request, "User created successfully.")
-
     return redirect("dashboard")
 
 
@@ -176,8 +167,7 @@ def delete_user(request):
     try:
         user = User.objects.get(id=user_id)
         user.delete()
-        messages.success(request, "User deleted successfully.")
     except User.DoesNotExist:
-        messages.error(request, "User not found.")
+        return HttpResponseForbidden("User not found.")
 
     return redirect("dashboard")
