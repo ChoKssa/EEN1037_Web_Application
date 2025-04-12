@@ -13,6 +13,8 @@ from django.db.models import Count
 import json
 from django.http import HttpResponseForbidden
 from django.contrib.auth.hashers import make_password
+from .export import export_csv, export_pdf
+from django.http import HttpResponse
 
 
 
@@ -100,9 +102,17 @@ def dashboard(request):
 @login_required
 @require_POST
 def export_data(request):
-    context = {}
-    # [TODO] create file to be exported
-    # [TODO] return file to be downloaded
+    if request.user.role != UserRole.MANAGER:
+        return HttpResponseForbidden("Only managers can export data.")
+    export_type = request.POST.get("type")
+    machines = Machine.objects.all().select_related().prefetch_related("collections")
+
+    if export_type == "csv":
+        return export_csv(machines)
+    elif export_type == "pdf":
+        return export_pdf(machines)
+    else:
+        return HttpResponse("Invalid export type", status=400)
 
 
 

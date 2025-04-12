@@ -103,8 +103,17 @@
       {% endfor %}
     </div>
     <div class="export-button-container">
-      <button class="export-btn" onclick="exportCSVData()">Export as CSV</button>
-      <button class="export-btn" onclick="exportPDFData()">Export as PDF</button>
+      <form method="post" action="{% url 'export_data' %}" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="csv">
+        <button type="submit" class="export-btn">Export as CSV</button>
+      </form>
+
+      <form method="post" action="{% url 'export_data' %}" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="pdf">
+        <button type="submit" class="export-btn">Export as PDF</button>
+      </form>
     </div>
     <h3 class="section-subtitle">User Management</h3>
     <div class="user-management">
