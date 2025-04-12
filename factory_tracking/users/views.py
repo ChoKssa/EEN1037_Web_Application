@@ -1,5 +1,6 @@
 from collections import defaultdict
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,9 @@ from machinery.models import Machine, Warning, Collection
 from users.models import UserRole
 from collections import defaultdict
 from django.db.models import Count
-import json 
+import json
+from django.http import HttpResponseForbidden
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -53,8 +56,10 @@ def dashboard(request):
         all_machines = Machine.objects.prefetch_related("collections")
         collections = Collection.objects.prefetch_related("machines")
         machines_by_collection = defaultdict(list)
+        User = get_user_model()
+        users = User.objects.all().values('id', 'email', 'username', 'role')
 
-        
+
         counts = json.dumps([
             Machine.objects.filter(status="OK").count(),
             Machine.objects.filter(status="FAULT").count(),
@@ -66,13 +71,14 @@ def dashboard(request):
         for machine in all_machines:
             for collection in machine.collections.all():
                 machines_by_collection[collection.name].append(machine)
-  
 
         context.update({
+            "users": users,
+            "roles": UserRole.choices,
             "machines": all_machines,
             "fault_count": all_machines.filter(status="FAULT").count(),
             "ok_count": all_machines.filter(status="OK").count(),
-            "warning_count": all_machines.filter(status="WARNING").count(),  
+            "warning_count": all_machines.filter(status="WARNING").count(),
             "collections": collections,
             "machines_by_collection": machines_by_collection,
             "labels": labels,
@@ -99,31 +105,69 @@ def export_data(request):
     # [TODO] return file to be downloaded
 
 
-@login_required
-def accounts(request):
-    context = {}
-    # [TODO] Fetch all users and their information and add them to the context (only for manager)
-    return render(request, "users/accounts.html", context)
-
 
 @login_required
 @require_POST
-def create_user(request):
-    context = {}
-    # [TODO] Handle user creation logic here
+def create_user_or_edit(request):
+    if request.user.role != UserRole.MANAGER:
+        return HttpResponseForbidden("Only managers can manage users.")
 
-    # return render(request, "users/create_user.html", context)
+    User = get_user_model()
+    user_id = request.POST.get("user_id")
+    email = request.POST.get("email")
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    role = request.POST.get("role")
+
+    if not username or role not in UserRole.values:
+        messages.error(request, "Invalid input data.")
+        return redirect("dashboard")
+
+    if user_id:
+        try:
+            print(f"Editing user with ID: {user_id}")
+            print(f"New username: {username}, email: {email}, role: {role}")
+            user = User.objects.get(id=user_id)
+            user.username = username
+            user.email = email
+            user.role = role
+            user.save()
+            messages.success(request, "User updated successfully.")
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+    else:
+        if not password:
+            messages.error(request, "Password is required for new users.")
+            return redirect("dashboard")
+        print(f"Creating new user with username: {username}, email: {email}, role: {role}")
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+        else:
+            User.objects.create(
+                username=username,
+                email=email,
+                password=make_password(password),
+                role=role
+            )
+            messages.success(request, "User created successfully.")
+
+    return redirect("dashboard")
 
 
-@login_required
 @require_POST
-def update_user_role(request):
-    context = {}
-    # [TODO] Change user role
-
-
 @login_required
-@require_POST
 def delete_user(request):
-    context = {}
-    # [TODO] Delete user account
+    if request.user.role != UserRole.MANAGER:
+        return HttpResponseForbidden("Only managers can delete users.")
+
+    User = get_user_model()
+    user_id = request.POST.get("user_id")
+
+    try:
+        user = User.objects.get(id=user_id)
+        user.delete()
+        messages.success(request, "User deleted successfully.")
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+
+    return redirect("dashboard")

@@ -76,7 +76,9 @@ class Warning(models.Model):
     )
     added_by = models.ForeignKey(
         User,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='added_warnings',
         help_text="User who added the warning"
     )
