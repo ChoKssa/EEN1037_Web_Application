@@ -55,6 +55,47 @@
 	margin-top: 3px;
 }
 
+.warning-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	background: #f1f5fe;
+	padding: 8px 12px;
+	margin-bottom: 5px;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.delete-warning-form {
+	margin: 0;
+}
+
+.machine-detail-page .warning-delete-button {
+	all: unset;
+	color: #999;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	margin-right: 8px;
+	margin-top: 2px;
+	line-height: 1;
+	transition: color 0.2s ease;
+	display: inline-block;
+}
+
+.machine-detail-page .warning-delete-button:hover {
+	all: unset;
+	color: #999;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	margin-right: 8px;
+	margin-top: 2px;
+	line-height: 1;
+	transition: color 0.2s ease;
+	display: inline-block;
+}
+
 .machine-detail-page input[type="text"],
 .machine-detail-page select {
 	width: 100%;

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Machine
+from .models import Machine, Collection, Warning, MachineStatus
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
@@ -53,6 +53,7 @@ def machine_detail(request, machine_id):
     faults = machine.faults.select_related("reported_by").all()
 
     context = {
+        "user_role": user.role,
         "machine": machine,
         "collections": machine.collections.all(),
         "faults": faults,
@@ -76,8 +77,24 @@ def create_machine(request):
     status = request.POST.get("status")
     collections_raw = request.POST.get("collections", "")
     assigned_raw = request.POST.get("assigned", "")
-
+    print(f"collections_raw: {collections_raw}")
     # [TODO] Add the new machine in database
+    machine = Machine.objects.create(name=name, status=status)
+
+    # Add collections
+    collection_names = [c.strip() for c in collections_raw.split(",") if c.strip()]
+    collections = []
+
+    for name in collection_names:
+        collection, _ = Collection.objects.get_or_create(name=name)
+        collections.append(collection)
+    machine.collections.set(collections)
+
+    # Add assigned users
+    usernames = [u.strip() for u in assigned_raw.split(",") if u.strip()]
+    users = User.objects.filter(username__in=usernames)
+    machine.assigned_users.set(users)
+    machine.save()
 
     return redirect("machines")
 
@@ -93,6 +110,23 @@ def edit_machine(request, machine_id):
     assigned_raw = request.POST.get("assigned", "")
 
     # [TODO] Update the machine in database
+    machine = get_object_or_404(Machine, id=machine_id)
+    machine.name = name
+    machine.status = status
+
+    collection_names = [c.strip() for c in collections_raw.split(",") if c.strip()]
+    collections = []
+
+    for name in collection_names:
+        collection, _ = Collection.objects.get_or_create(name=name)
+        collections.append(collection)
+    machine.collections.set(collections)
+
+    usernames = [u.strip() for u in assigned_raw.split(",") if u.strip()]
+    users = User.objects.filter(username__in=usernames)
+    machine.assigned_users.set(users)
+
+    machine.save()
 
     return redirect("machine_detail", machine_id=machine_id)
 
@@ -103,7 +137,8 @@ def delete_machine(request, machine_id):
     if request.user.role != UserRole.MANAGER:
         return HttpResponseForbidden("Only managers can delete machines.")
 
-    # [TODO] Delete the machine from the database
+    machine = get_object_or_404(Machine, id=machine_id)
+    machine.delete()
     return redirect("machines")
 
 
@@ -117,8 +152,44 @@ def add_warning(request, machine_id):
     message = request.POST.get("message", "").strip()
 
     if message:
-        # [TODO] Add warning to machine
         print(f"Adding warning to machine {machine_id}: {message}")
 
+        machine = get_object_or_404(Machine, id=machine_id)
+        # Prevent duplicate message for same machine (due to unique_together)
+        if not Warning.objects.filter(machine=machine, message=message).exists():
+            Warning.objects.create(
+                machine=machine,
+                message=message,
+                added_by=user
+            )
 
+            if machine.status == MachineStatus.OK:
+                machine.status = MachineStatus.WARNING
+                machine.save()
+
+    return redirect("machine_detail", machine_id=machine_id)
+
+
+@login_required
+@require_POST
+def delete_warning(request, machine_id):
+    user = request.user
+    if user.role not in [UserRole.MANAGER, UserRole.TECHNICIAN, UserRole.REPAIR]:
+        return HttpResponseForbidden("You are not allowed to delete warnings.")
+
+    warning_id = request.POST.get("warning_id")
+    warning = get_object_or_404(Warning, id=warning_id)
+
+    if warning.machine.id == machine_id:
+        warning.delete()
+
+        # Check if there are any warnings left for the machine
+        if not Warning.objects.filter(machine=warning.machine).exists():
+            if warning.machine.faults.filter(status='OPEN').exists():
+                warning.machine.status = MachineStatus.FAULT
+            else:
+                warning.machine.status = MachineStatus.OK
+            warning.machine.save()
+    else:
+        return HttpResponseForbidden("Warning does not belong to this machine.")
     return redirect("machine_detail", machine_id=machine_id)

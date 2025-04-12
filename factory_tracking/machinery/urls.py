@@ -9,4 +9,5 @@ urlpatterns = [
     path("machines/<int:machine_id>/update/", views.edit_machine, name="update_machine"),
     path("machines/<int:machine_id>/delete/", views.delete_machine, name="delete_machine"),
     path("machines/<int:machine_id>/add-warning/", views.add_warning, name="add_warning"),
+    path("machines/<int:machine_id>/delete-warning/", views.delete_warning, name="delete_warning"),
 ]
