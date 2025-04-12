@@ -21,7 +21,13 @@
     <p><strong>Machine:</strong> {{ fault.machine.name }}</p>
     <p><strong>Description:</strong> {{ fault.description }}</p>
     <p><strong>Status:</strong> <span id="faultStatus">{{ fault.status }}</span></p>
-    <p><strong>Reported By:</strong> {{ fault.reported_by.username }}</p>
+    <p><strong>Reported By:</strong>
+      {% if fault.reported_by %}
+        {{ fault.reported_by.username }}
+      {% else %}
+        <em>(deleted user)</em>
+      {% endif %}
+    </p>
     <p><strong>Created:</strong> {{ fault.created_at|date:"SHORT_DATETIME_FORMAT" }}</p>
 
     {% if fault.images.all %}
@@ -51,7 +57,15 @@
         {% for note in notes %}
         <li>
           <p>{{ note.content }}</p>
-          <small>— {{ note.author.username }}, {{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+          <small>—
+            {% if note.author %}
+              {{ note.author.username }}
+            {% else %}
+              <em>(deleted user)</em>
+            {% endif %},
+            {{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}
+          </small>
+
           {% if note.images.all %}
           <div class="image-gallery">
             {% for image in note.images.all %}
