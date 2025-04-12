@@ -29,7 +29,19 @@
     <p><strong>Warnings:</strong></p>
     <ul>
       {% for warning in warnings %}
-        <li>{{ warning.message }} <small>(by {{ warning.added_by.username }}, {{ warning.created_at|date:"SHORT_DATETIME_FORMAT" }})</small></li>
+        <li class="warning-item">
+          {% if user_role in 'MANAGER TECH REPAIR' %}
+          <form method="POST" action="{% url 'delete_warning' machine.id %}" class="delete-warning-form">
+            {% csrf_token %}
+            <input type="hidden" name="warning_id" value="{{ warning.id }}">
+            <button type="submit" class="warning-delete-button" title="Delete warning">×</button>
+          </form>
+          {% endif %}
+          <div>
+            {{ warning.message }}<br />
+            <small>(by {{ warning.added_by.username }}, {{ warning.created_at|date:"SHORT_DATETIME_FORMAT" }})</small>
+          </div>
+        </li>
       {% empty %}
         <li><em>No warnings</em></li>
       {% endfor %}
