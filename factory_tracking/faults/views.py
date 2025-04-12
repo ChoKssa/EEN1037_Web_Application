@@ -33,9 +33,8 @@ def fault_detail(request, fault_id):
     fault = get_object_or_404(FaultCase, id=fault_id)
     notes = fault.notes.select_related('author').prefetch_related('images').all()
     user = request.user
-
     can_add_note = user.role in ['TECH', 'REPAIR', 'MANAGER']
-    can_close = user.role == 'MANAGER' and fault.status == 'OPEN'
+    can_close = user.role in ['MANAGER', 'REPAIR'] and fault.status == 'OPEN'
 
     context = {
         "fault": fault,
@@ -120,11 +119,6 @@ def add_fault_note(request, fault_id):
                 note=note,
             )
 
-        # Update fault status if technician is adding a note
-        if request.user.role == 'TECH' and fault.status == 'OPEN':
-            fault.status = 'IN_PROGRESS'
-            fault.save()
-
     except Exception as e:
         print(f"Error adding note: {str(e)}")
         return HttpResponseForbidden("Error occurred while adding note.")
@@ -138,7 +132,7 @@ def add_fault_note(request, fault_id):
 def close_fault(request, fault_id):
     fault = get_object_or_404(FaultCase, id=fault_id)
 
-    if request.user.role != "MANAGER":
+    if request.user.role not in ["MANAGER", "REPAIR"]:
         return HttpResponseForbidden("Only managers can close faults.")
 
     # Close fault in db

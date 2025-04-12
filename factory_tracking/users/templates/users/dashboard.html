@@ -21,9 +21,15 @@
 {% block content %}
 <main>
   <section id="overview" class="card">
-    <h2 class="section-title">
-      Dashboard – <span class="role">{{ user.get_role_display }}</span>
-    </h2>
+    <div class="section-title-with-button">
+      <h2 class="section-title">
+        Dashboard - <span class="role">{{ user.get_role_display }}</span>
+      </h2>
+      {% if user_role == 'MANAGER' %}
+      <a href="{% url 'manage_api_keys' %}" class="api-key-btn">Manage API Keys</a>
+      {% endif %}
+    </div>
+
 
     {% if user_role == 'MANAGER' %}
     <!-- Manager View -->
@@ -198,10 +204,12 @@
       <ul class="machine-list">
         {% for machine in assigned_machines %}
         <li class="machine-card">
+          <a href="{% url 'machine_detail' machine.id %}" class="machine-card-link">
           <div class="machine-name">{{ machine.name }}</div>
           <span class="machine-detail">Status: {{ machine.status }}</span>
           <span class="machine-detail">Collections: {{ machine.collections.all|join:", " }}</span>
           <span class="machine-detail">Assigned Users: {{ machine.assigned_users.all|join:", " }}</span>
+          </a>
         </li>
         {% empty %}
         <li class="machine-card">No assigned machines.</li>
