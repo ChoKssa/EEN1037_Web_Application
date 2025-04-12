@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 import dj_database_url
 from django.urls import reverse_lazy
@@ -91,10 +92,12 @@ WSGI_APPLICATION = 'factory_tracking.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+STORAGE_DIR = BASE_DIR / 'storage'
+os.makedirs(STORAGE_DIR, exist_ok=True)
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / 'storage' / 'db.sqlite3'}',
+        default=f'sqlite:///{STORAGE_DIR / "db.sqlite3"}',
         conn_max_age=600,
         conn_health_checks=True,
     )
