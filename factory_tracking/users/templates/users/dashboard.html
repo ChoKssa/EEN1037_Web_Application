@@ -1,34 +1,135 @@
-
-
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %}
+{% load dashboard_extra %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block styles %}
-<link
-	rel="stylesheet"
-	href="{% static 'users/css/dashboard.css' %}"
-/>
+<link rel="stylesheet" href="{% static 'users/css/dashboard.css' %}" />
 {% endblock %}
 
 {% block content %}
 <main>
   <section id="overview" class="card">
-    <h2>Overview</h2>
-    <p>
-      Welcome to your dashboard. Here you can find a quick summary of your
-      data.
-    </p>
-  </section>
+    <h2 class="section-title">
+      Dashboard – <span class="role">{{ user.get_role_display }}</span>
+    </h2>
 
-  <section id="reports" class="card">
-    <h2>Reports</h2>
-    <p>Access detailed reports and analytics here.</p>
-  </section>
+    {% if user_role == 'MANAGER' %}
+    <!-- Manager View -->
+    <div class="stats-grid">
+      <div class="stat-box ok">
+        <h4>Total Machines</h4>
+        <p>{{ machines.count }}</p>
+        <button class="arrow-btn" onclick="toggleTotal()">↓</button>
+        <div id="stat-details-total" class="stat-details hidden">
+          {% for machine in machines %}
+          <p>{{ machine.name }}</p>
+          {% endfor %}
+        </div>
+      </div>
 
-  <section id="settings" class="card">
-    <h2>Settings</h2>
-    <p>Manage your preferences and account settings.</p>
+      <div class="stat-box ok">
+        <h4>Machines OK</h4>
+        <p>{{ ok_count }}</p>
+        <button class="arrow-btn" onclick="toggleOK()">↓</button>
+        <div id="stat-details-ok" class="stat-details hidden">
+          {% for machine in machines %}
+          {% if machine.status == "OK" %}
+          <p>{{ machine.name }}</p>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="stat-box fault">
+        <h4>Machines with Faults</h4>
+        <p>{{ fault_count }}</p>
+        <button class="arrow-btn" onclick="toggleFault()">↓</button>
+        <div id="stat-details-fault" class="stat-details hidden">
+          {% for machine in machines %}
+          {% if machine.status == "FAULT" %}
+          <p>{{ machine.name }}</p>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="stat-box warning">
+        <h4>Machines with Warnings</h4>
+        <p>{{ warning_count }}</p>
+        <button class="arrow-btn" onclick="toggleWarning()">↓</button>
+        <div id="stat-details-warning" class="stat-details hidden">
+          {% for machine in machines %}
+          {% if machine.status == "WARNING" %}
+          <p>{{ machine.name }}</p>
+          
+          
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <h3 class="section-subtitle">Machine Status Distribution</h3>
+    <div class="chart-wrapper">
+      <canvas id="statusPieChart" width="300" height="300"></canvas>
+      
+    </div>
+    
+
+    <!-- Machines by Collection -->
+    <h3 class="section-subtitle">Machines by Collection:</h3>
+    <div class="collection-container">
+      {% for collection in collections %}
+      <div class="collection-group">
+        <h4>{{ collection.name }}</h4>
+        <ul>
+          {% for machine in machines_by_collection|get_item:collection.name %}
+          <li>
+            <strong>{{ machine.name }}</strong> -
+            <span class="machine-status status-{{ machine.status|lower }}">{{ machine.status }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="export-button-container">
+      <button class="export-btn" onclick="exportCSVData()">Export as CSV</button>
+      <button class="export-btn" onclick="exportPDFData()">Export as PDF</button>
+    </div>
+
+    {% elif user_role == 'TECH' or user_role == 'REPAIR' %}
+    <!-- Technician or Repair View -->
+    <div class="assigned-machine-box">
+      <h3>You are assigned to {{ assigned_count }} machines</h3>
+      <ul class="machine-list">
+        {% for machine in assigned_machines %}
+        <li class="machine-card">
+          <div class="machine-name">{{ machine.name }}</div>
+          <span class="machine-detail">Status: {{ machine.status }}</span>
+          <span class="machine-detail">Collections: {{ machine.collections.all|join:", " }}</span>
+          <span class="machine-detail">Assigned Users: {{ machine.assigned_users.all|join:", " }}</span>
+        </li>
+        {% empty %}
+        <li class="machine-card">No assigned machines.</li>
+        {% endfor %}
+      </ul>
+    <a href="{% url 'machines' %}" class="see-more-button">See More</a>
+
+    {% endif %}
+
   </section>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const Labels = JSON.parse('{{ labels|safe|escapejs }}');
+  const Counts = JSON.parse('{{ counts|safe|escapejs }}');
+</script>
+<script src="{% static 'users/js/dashboard.js' %}"></script>
 {% endblock %}

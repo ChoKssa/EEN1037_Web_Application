@@ -1,9 +1,16 @@
+from collections import defaultdict
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
+from machinery.models import Machine, Warning, Collection
+from users.models import UserRole
+from collections import defaultdict
+from django.db.models import Count
+import json 
+
 
 
 def login(request):
@@ -35,12 +42,54 @@ def logout(request):
     return redirect("login")
 
 
+
 @login_required
 def dashboard(request):
-    context = {}
-    # [TODO] Fetch user/machines/faults information and add them to the context
-    return render(request, "users/dashboard.html", context)
+    user = request.user
+    role = user.role
+    context = {"user_role": role}
 
+    if role == UserRole.MANAGER:
+        all_machines = Machine.objects.prefetch_related("collections")
+        collections = Collection.objects.prefetch_related("machines")
+        machines_by_collection = defaultdict(list)
+
+        
+        counts = json.dumps([
+            Machine.objects.filter(status="OK").count(),
+            Machine.objects.filter(status="FAULT").count(),
+            Machine.objects.filter(status="WARNING").count()
+        ])
+        labels = json.dumps(["OK", "Fault", "Warning"])
+
+
+        for machine in all_machines:
+            for collection in machine.collections.all():
+                machines_by_collection[collection.name].append(machine)
+  
+
+        context.update({
+            "machines": all_machines,
+            "fault_count": all_machines.filter(status="FAULT").count(),
+            "ok_count": all_machines.filter(status="OK").count(),
+            "warning_count": all_machines.filter(status="WARNING").count(),  
+            "collections": collections,
+            "machines_by_collection": machines_by_collection,
+            "labels": labels,
+            "counts": counts,
+        })
+
+    elif role in [UserRole.TECHNICIAN, UserRole.REPAIR]:
+        assigned = Machine.objects.filter(assigned_users=user).prefetch_related("collections", "warnings")
+        context.update({
+            "assigned_machines": assigned,
+            "assigned_count": assigned.count(),
+        })
+
+    else:
+        context["message"] = "You have view-only access."
+
+    return render(request, "users/dashboard.html", context)
 
 @login_required
 @require_POST
