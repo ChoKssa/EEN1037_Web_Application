@@ -40,13 +40,16 @@ jobs:
                   python-version: "3.11"
 
             - name: Install dependencies
+              working-directory: factory_tracking
               run: |
                   pip install -r requirements.txt
 
             - name: Apply migrations
+              working-directory: factory_tracking
               run: |
                   python manage.py migrate
 
             - name: Run tests
+              working-directory: factory_tracking
               run: |
                   python manage.py test
