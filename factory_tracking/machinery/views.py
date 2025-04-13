@@ -61,7 +61,7 @@ def machine_detail(request, machine_id):
         "repairers": machine.assigned_users.filter(role=UserRole.REPAIR),
         "warnings": machine.warnings.all(),
         "is_manager": user.role == UserRole.MANAGER,
-        "can_add_warning": user.role in [UserRole.TECHNICIAN, UserRole.REPAIR, UserRole.MANAGER],
+        "can_add_warning": user.role in [UserRole.TECHNICIAN, UserRole.MANAGER],
         "all_usernames": list(User.objects.values_list("username", flat=True)) if user.role == UserRole.MANAGER else [],
         "assigned_usernames": list(machine.assigned_users.values_list("username", flat=True)) if user.role == UserRole.MANAGER else [],
     }
@@ -143,7 +143,7 @@ def delete_machine(request, machine_id):
 @require_POST
 def add_warning(request, machine_id):
     user = request.user
-    if user.role not in [UserRole.MANAGER, UserRole.TECHNICIAN, UserRole.REPAIR]:
+    if user.role not in [UserRole.MANAGER, UserRole.TECHNICIAN]:
         return HttpResponseForbidden("You are not allowed to add warnings.")
 
     message = request.POST.get("message", "").strip()
